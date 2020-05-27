@@ -30,7 +30,7 @@
             <v-spacer />
             <img
               class="ma-4"
-              src="https://lh3.googleusercontent.com/proxy/n9BEus4hzkceITx7H-I4ajxSQsRjJ6OO5IeDTt5HckgGpwf83LDz68TE77YhEZ-gDOVvgGW3u9q4Ql6HyPit9TSOi9dugicW2ClvTSBqGsr9AiN50P5Nivk"
+              src="https://datakepri.com/wp-content/uploads/2017/11/300x250.jpg"
             />
           </v-row>
           <v-divider v-if="index < lectures[day].length - 1" />

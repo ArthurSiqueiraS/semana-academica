@@ -10,17 +10,23 @@
         fixed
         bottom
         right
-        color="primary"
+        color="secondary"
         @click="toTop"
       >
         <v-icon>keyboard_arrow_up</v-icon>
       </v-btn>
     </v-fab-transition>
+    <Footer />
   </v-app>
 </template>
 
 <script>
+import Footer from '@/components/layout/Footer'
+
 export default {
+  components: {
+    Footer
+  },
   data: () => ({
     fab: false
   }),

@@ -8,7 +8,7 @@
             class="accent"
             :color="$vuetify.theme.dark ? '' : 'secondary'"
           >
-            <v-icon size="20" class="mr-1">person</v-icon>ENTRAR
+            <v-icon size="20" class="mr-1">login</v-icon>ENTRAR
           </v-btn>
         </slot>
       </div>
@@ -120,7 +120,7 @@ export default {
   methods: {
     async login() {
       this.loading = true
-      const response = await this.$auth.loginWith('local', {
+      await this.$auth.loginWith('local', {
         data: {
           auth: {
             email: this.email,
@@ -130,8 +130,6 @@ export default {
       })
 
       this.loading = false
-
-      console.log(response)
     }
   }
 }

@@ -1,60 +1,51 @@
 <template>
   <div>
-    <v-toolbar
-      v-show="$vuetify.breakpoint.lgAndUp"
-      id="toolbar"
-      class="primary"
-      flat
-      dense
-    >
-      <!-- removes spaces in small screens -->
-      <v-btn
-        v-for="link in links"
-        :key="link.name"
-        :to="link.url"
-        text
-        :color="$vuetify.theme.dark ? '' : 'secondary'"
-      >
-        <v-icon size="20" class="mr-1">{{ link.icon }}</v-icon>
-        {{ link.name }}
+    <v-toolbar id="toolbar" class="primary" flat dense>
+      <v-btn v-if="$auth.loggedIn" text @click="drawer = true">
+        <v-icon :color="$vuetify.theme.dark ? '' : 'secondary'">
+          menu
+        </v-icon>
       </v-btn>
-      <v-spacer></v-spacer>
+      <Login v-else :first-access="firstAccess" />
+      <v-divider vertical class="mr-4" />
       <v-icon class="mr-2" :color="$vuetify.theme.dark ? '' : 'secondary'">
         {{ $vuetify.theme.dark ? 'wb_sunny' : 'brightness_2' }}
       </v-icon>
       <v-switch
         v-model="$vuetify.theme.dark"
-        class="mr-2"
         color="accent"
+        class="mr-1"
         hide-details
       />
-      <Login :first-access="true" />
     </v-toolbar>
-    <v-navigation-drawer v-model="drawer" absolute temporary right>
-      <UserMenu slot="content" />
+    <v-navigation-drawer v-if="$auth.loggedIn" v-model="drawer" fixed temporary>
+      <UserMenu />
     </v-navigation-drawer>
   </div>
 </template>
 
 <script>
 import Login from '@/components/Login'
+import UserMenu from '@/components/UserMenu'
 
 export default {
   components: {
-    Login
+    Login,
+    UserMenu
   },
   data() {
     return {
-      links: [
-        { name: 'Cronograma', url: '/', icon: 'schedule' },
-        {
-          name: 'Mostra Científica',
-          url: '/publications',
-          icon: 'library_books'
-        }
-      ],
       drawer: false,
-      firstAccess: true
+      firstAccess: !this.$auth.loggedIn
+    }
+  },
+  watch: {
+    '$auth.loggedIn'(loggedIn) {
+      if (loggedIn) {
+        this.firstAccess = false
+      } else {
+        this.drawer = false
+      }
     }
   }
 }

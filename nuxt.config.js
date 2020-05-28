@@ -82,9 +82,16 @@ export default {
             propertyName: 'token',
             headers: { 'Content-Type': 'application/json' }
           },
-          user: false
+          user: {
+            url: baseUrl + '/user',
+            method: 'get',
+            propertyName: false
+          }
         }
       }
+    },
+    redirect: {
+      login: '/'
     }
   },
   router: {

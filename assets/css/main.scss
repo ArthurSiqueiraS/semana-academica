@@ -1,4 +1,7 @@
-html { overflow-y: auto }
+body, html {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
 * {
   outline: none;

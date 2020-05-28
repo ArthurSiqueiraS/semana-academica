@@ -1,6 +1,12 @@
 <template>
   <div>
-    <v-toolbar id="toolbar" class="primary" flat dense>
+    <v-toolbar
+      v-show="$vuetify.breakpoint.lgAndUp"
+      id="toolbar"
+      class="primary"
+      flat
+      dense
+    >
       <!-- removes spaces in small screens -->
       <v-btn
         v-for="link in links"
@@ -22,11 +28,7 @@
         color="accent"
         hide-details
       />
-      <Dialog>
-        <v-btn slot="activator" depressed color="accent"
-          ><v-icon>person</v-icon>Entrar</v-btn
-        >
-      </Dialog>
+      <Login :first-access="true" />
     </v-toolbar>
     <v-navigation-drawer v-model="drawer" absolute temporary right>
       <UserMenu slot="content" />
@@ -35,13 +37,11 @@
 </template>
 
 <script>
-import Dialog from '@/components/prototypes/Dialog'
-// import Login from '@/components/Login'
+import Login from '@/components/Login'
 
 export default {
   components: {
-    Dialog
-    // Login
+    Login
   },
   data() {
     return {
@@ -53,7 +53,8 @@ export default {
           icon: 'library_books'
         }
       ],
-      drawer: false
+      drawer: false,
+      firstAccess: true
     }
   }
 }

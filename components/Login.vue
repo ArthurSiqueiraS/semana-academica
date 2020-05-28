@@ -3,7 +3,11 @@
     <template v-slot:activator="{ on }">
       <div style="height: 100%" v-on="on">
         <slot name="activator">
-          <v-btn text class="accent" color="secondary">
+          <v-btn
+            text
+            class="accent"
+            :color="$vuetify.theme.dark ? '' : 'secondary'"
+          >
             <v-icon size="20" class="mr-1">person</v-icon>ENTRAR
           </v-btn>
         </slot>

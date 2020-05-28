@@ -22,7 +22,12 @@ export default function(_, inject) {
     }
   }
 
+  function publication(p) {
+    return p
+  }
+
   inject('representers', {
-    lecture
+    lecture,
+    publication
   })
 }

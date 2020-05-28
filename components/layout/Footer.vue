@@ -1,13 +1,22 @@
 <template>
-  <v-footer class="flex-column primary pt-4" padless>
-    <div>
+  <v-footer class="flex-column primary">
+    <v-row align="center" class="py-6">
       <!-- UFPEL -->
-      <img
-        src="@/assets/images/UFPEL-ESCUDO-2013.png"
+      <v-img
+        :src="
+          require($vuetify.theme.isDark
+            ? '@/assets/images/SAM_logo_purple.png'
+            : '@/assets/images/SAM_logo_white.png')
+        "
         width="150"
         alt="UFPEL"
       />
-    </div>
+      <!-- <img
+        src="@/assets/images/UFPEL-ESCUDO-2013.png"
+        width="150"
+        alt="UFPEL"
+      /> -->
+    </v-row>
 
     <!-- Legal Footer -->
     <div class="pb-2 secondary--text">
@@ -25,7 +34,3 @@
     </div>
   </v-footer>
 </template>
-
-<script>
-export default {}
-</script>

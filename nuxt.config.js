@@ -1,6 +1,12 @@
 import colors from 'vuetify/es5/util/colors'
 
+const dev = process.env.NODE_ENV === 'development'
+const baseUrl = dev ? 'http://192.168.0.8:8000' : 'http://192.168.0.8:8000'
+
 export default {
+  env: {
+    baseUrl
+  },
   mode: 'spa',
   server: {
     port: 8080,
@@ -40,7 +46,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/representers'],
+  plugins: ['@/plugins/axios', '@/plugins/representers'],
   /*
    ** Nuxt.js dev-modules
    */
@@ -74,8 +80,17 @@ export default {
         dark: {
           primary: colors.blue.darken2,
           accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
+          secondary: '#481973',
+          info: colors.grey.base,
+          warning: colors.amber.base,
+          error: colors.deepOrange.accent4,
+          success: colors.green.accent3
+        },
+        light: {
+          primary: '#00a398',
+          secondary: '#ffffff',
+          accent: '#481973',
+          info: colors.grey.base,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3

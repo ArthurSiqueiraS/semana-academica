@@ -1,0 +1,13 @@
+html { overflow-y: auto }
+
+* {
+  outline: none;
+
+}
+
+.v-pagination {
+  &__item,
+  &__navigation {
+     box-shadow: none !important;
+  }
+}

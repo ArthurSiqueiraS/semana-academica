@@ -1,6 +1,9 @@
 <template>
   <v-app>
-    <nuxt />
+    <Toolbar />
+    <v-content>
+      <nuxt />
+    </v-content>
     <v-fab-transition>
       <v-btn
         v-show="fab"
@@ -10,7 +13,7 @@
         fixed
         bottom
         right
-        color="secondary"
+        color="accent"
         @click="toTop"
       >
         <v-icon>keyboard_arrow_up</v-icon>
@@ -22,10 +25,12 @@
 
 <script>
 import Footer from '@/components/layout/Footer'
+import Toolbar from '@/components/layout/Toolbar'
 
 export default {
   components: {
-    Footer
+    Footer,
+    Toolbar
   },
   data: () => ({
     fab: false

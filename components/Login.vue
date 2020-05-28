@@ -22,7 +22,6 @@
         </v-row>
         <v-img
           v-show="!subscription"
-          v-card-title
           max-width="200px"
           :src="
             require($vuetify.theme.isDark
@@ -50,16 +49,33 @@
         </div>
       </div>
       <v-form v-show="subscription == false">
-        <div class="mx-12">
-          <v-text-field v-model="login" label="E-mail" />
-          <v-text-field v-model="password" label="Senha" />
+        <div class="mx-12" @keyup.enter="login()">
+          <v-text-field v-model="email" label="E-mail" />
+          <v-text-field
+            v-model="password"
+            :type="hidePassword ? 'password' : ''"
+            :append-icon="hidePassword ? 'visibility' : 'visibility_off'"
+            label="Senha"
+            @click:append="hidePassword = !hidePassword"
+          />
         </div>
         <v-card-actions>
-          <v-btn text color="accent" @click="subscription = true">
+          <v-btn
+            text
+            color="accent"
+            :disabled="loading"
+            @click="subscription = true"
+          >
             Inscrever-se
           </v-btn>
           <v-spacer />
-          <v-btn depressed rounded color="primary">
+          <v-btn
+            depressed
+            rounded
+            color="primary"
+            :loading="loading"
+            @click="login"
+          >
             Entrar
           </v-btn>
         </v-card-actions>
@@ -86,10 +102,12 @@ export default {
   },
   data() {
     return {
-      login: '',
+      email: '',
       password: '',
+      hidePassword: true,
       subscription: null,
-      dialog: this.firstAccess
+      dialog: this.firstAccess,
+      loading: false
     }
   },
   watch: {
@@ -97,6 +115,23 @@ export default {
       if (!open) {
         this.subscription = false
       }
+    }
+  },
+  methods: {
+    async login() {
+      this.loading = true
+      const response = await this.$auth.loginWith('local', {
+        data: {
+          auth: {
+            email: this.email,
+            password: this.password
+          }
+        }
+      })
+
+      this.loading = false
+
+      console.log(response)
     }
   }
 }

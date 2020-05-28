@@ -9,6 +9,7 @@
 import LecturesPanel from '@/components/LecturesPanel'
 
 export default {
+  auth: false,
   components: {
     LecturesPanel
   }

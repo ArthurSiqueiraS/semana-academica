@@ -17,14 +17,14 @@ export default {
    */
   head: {
     titleTemplate: '%s' + (dev ? ' - Dev' : ''),
-    title: 'Semana Acadêmica da Medicina UFPEL',
+    title: 'Semana Acadêmica de Medicina UFPEL 2020',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       {
         hid: 'description',
         name: 'description',
-        content: 'XXXVI Semana Acadêmica da Medicina UFPEL - de 27/07 a 31/07'
+        content: 'XXXVI Semana Acadêmica de Medicina UFPEL- de 27/07 a 31/07'
       }
     ],
     link: [
@@ -59,7 +59,8 @@ export default {
    ** Nuxt.js modules
    */
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
+    // Doc: https://axios.nuxtjs.org/usage,
+    '@nuxtjs/auth',
     '@nuxtjs/axios',
     '@nuxtjs/pwa'
   ],
@@ -67,7 +68,28 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    progress: true,
+    credentials: true
+  },
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: baseUrl + '/login',
+            method: 'post',
+            propertyName: 'token',
+            headers: { 'Content-Type': 'application/json' }
+          },
+          user: false
+        }
+      }
+    }
+  },
+  router: {
+    middleware: ['auth']
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module

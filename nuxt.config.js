@@ -2,7 +2,7 @@ import colors from 'vuetify/es5/util/colors'
 
 const dev = process.env.NODE_ENV === 'development'
 const baseUrl = dev
-  ? 'http://192.168.0.8:8000'
+  ? 'https://semana-academica-medicina-dev.herokuapp.com/'
   : 'https://semana-academica-medicina.herokuapp.com/'
 
 export default {

@@ -22,25 +22,41 @@ export default {
     title: 'Semana Acadêmica de Medicina UFPEL 2020',
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      {
+        name: 'viewport',
+        content:
+          'width=device-width, initial-scale=1,  maximum-scale=1, user-scalable=no, minimal-ui'
+      },
       {
         hid: 'description',
         name: 'description',
         content: 'XXXVI Semana Acadêmica de Medicina UFPEL- de 27/07 a 31/07'
+      },
+      {
+        hid: 'og:image',
+        name: 'og:image',
+        content: 'https://sam2020.netlify.app/favicon.ico'
       }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon_2.ico' },
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: 'https://sam2020.netlify.app/favicon_2.ico'
+      },
       {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css?family=Material+Icons'
       }
     ]
   },
+  generate: {
+    fallback: true
+  },
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#fff' },
+  loading: { color: 'primary' },
   /*
    ** Global CSS
    */

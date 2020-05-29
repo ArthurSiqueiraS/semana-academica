@@ -35,14 +35,14 @@ export default {
       {
         hid: 'og:image',
         name: 'og:image',
-        content: 'https://sam2020.netlify.app/favicon.ico'
+        content: 'https://sam2020.netlify.app/logo_green.png'
       }
     ],
     link: [
       {
         rel: 'icon',
         type: 'image/x-icon',
-        href: 'https://sam2020.netlify.app/favicon_2.ico'
+        href: '/favicon.ico'
       },
       {
         rel: 'stylesheet',

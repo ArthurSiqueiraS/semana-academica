@@ -28,7 +28,7 @@
         :key="item.name"
         class="px-8"
         :to="item.url"
-        @click="item.click ? item.click : null"
+        @click="item.click"
       >
         <v-list-item-icon class="mr-6">
           <v-icon>{{ item.icon }}</v-icon>
@@ -46,13 +46,14 @@ export default {
     return {
       nextLecture: {},
       menuItems: [
-        { name: 'Cronograma', url: '/', icon: 'schedule' },
+        { name: 'Cronograma', url: '/', icon: 'schedule', click: () => {} },
         {
           name: 'Mostra Científica',
           url: '/publications',
-          icon: 'library_books'
+          icon: 'library_books',
+          click: () => {}
         },
-        { name: 'Alterar senha', icon: 'vpn_key' },
+        { name: 'Alterar senha', icon: 'vpn_key', click: () => {} },
         { name: 'Sair', icon: 'exit_to_app', click: this.logout }
       ]
     }

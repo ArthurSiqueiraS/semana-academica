@@ -118,23 +118,19 @@ export default {
     }
   },
   methods: {
-    login() {
-      this.$emit('loggedIn')
-      this.$auth.setUser({})
-    }
-    //   async login() {
-    //     this.loading = true
-    //     await this.$auth.loginWith('local', {
-    //       data: {
-    //         auth: {
-    //           email: this.email,
-    //           password: this.password
-    //         }
-    //       }
-    //     })
+    async login() {
+      this.loading = true
+      await this.$auth.loginWith('local', {
+        data: {
+          auth: {
+            email: this.email,
+            password: this.password
+          }
+        }
+      })
 
-    //     this.loading = false
-    //   }
+      this.loading = false
+    }
   }
 }
 </script>

@@ -28,7 +28,7 @@
         :key="item.name"
         class="px-8"
         :to="item.url"
-        @click="item.click"
+        @click="item.click ? item.click : null"
       >
         <v-list-item-icon class="mr-6">
           <v-icon>{{ item.icon }}</v-icon>

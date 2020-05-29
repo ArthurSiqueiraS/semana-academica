@@ -1,12 +1,6 @@
 <template>
   <div>
-    <v-tabs
-      v-model="tab"
-      hide-slider
-      background-color="accent"
-      fixed-tabs
-      show-arrows
-    >
+    <v-tabs v-model="tab" background-color="accent" fixed-tabs show-arrows>
       <v-tab v-for="day in days" :key="day">{{ day }}</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">

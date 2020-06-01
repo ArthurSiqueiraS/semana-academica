@@ -20,6 +20,33 @@
       </v-btn>
     </v-fab-transition>
     <Footer />
+    <v-dialog
+      v-model="remoteConnection"
+      persistent
+      width="max-content"
+      max-width="100%"
+    >
+      <v-card shaped class="pa-2 text-center text-no-wrap">
+        <v-card-title class="d-flex flex-column">
+          <v-icon size="48" color="error" class="mb-2">priority_high</v-icon>
+          Esta conta foi acessada <br />
+          de outro local
+        </v-card-title>
+        <v-card-text>
+          <v-spacer />
+          Você será desconectado agora.
+        </v-card-text>
+        <v-card-actions class="d-flex justify-center">
+          <v-btn
+            depressed
+            rounded
+            color="warning"
+            @click="remoteConnection = false"
+            >OK</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -32,9 +59,35 @@ export default {
     Footer,
     Toolbar
   },
-  data: () => ({
-    fab: false
-  }),
+  data() {
+    return {
+      fab: false,
+      remoteConnection: false
+    }
+  },
+  watch: {
+    remoteConnection(open) {
+      if (!open) {
+        location.reload()
+      }
+    }
+  },
+  mounted() {
+    this.$cable.subscribe({
+      channel: 'SessionChannel',
+      room: 'public'
+    })
+  },
+  channels: {
+    SessionChannel: {
+      received(data) {
+        if (this.$auth.user && this.$auth.user.id === data.user.id) {
+          this.$router.push('/')
+          this.remoteConnection = true
+        }
+      }
+    }
+  },
   methods: {
     onScroll(e) {
       if (typeof window === 'undefined') return

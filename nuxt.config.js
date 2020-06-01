@@ -1,9 +1,12 @@
 import colors from 'vuetify/es5/util/colors'
 
 const dev = process.env.NODE_ENV === 'development'
-const baseUrl = dev
-  ? 'https://semana-academica-medicina-dev.herokuapp.com'
-  : 'https://semana-academica-medicina.herokuapp.com'
+const test = process.env.NODE_ENV === 'test'
+
+let baseUrl = ''
+if (dev) baseUrl = 'http://192.168.0.8:8000'
+else if (test) baseUrl = 'https://semana-academica-medicina-dev.herokuapp.com'
+else baseUrl = 'https://semana-academica-medicina.herokuapp.com'
 
 export default {
   env: {
@@ -64,7 +67,11 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/axios', '@/plugins/representers'],
+  plugins: [
+    '@/plugins/axios',
+    '@/plugins/representers',
+    '@/plugins/actioncable-vue'
+  ],
   /*
    ** Nuxt.js dev-modules
    */

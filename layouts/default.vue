@@ -68,7 +68,7 @@ export default {
   watch: {
     remoteConnection(open) {
       if (!open) {
-        location.reload()
+        location.href = '/login'
       }
     }
   },

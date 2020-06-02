@@ -2,16 +2,31 @@
   <div>
     <v-img max-width="100vw" :src="require('@/assets/images/SAM_capa.jpg')" />
     <LecturesPanel />
+    <FirstAccess :first-access="firstAccess" />
   </div>
 </template>
 
 <script>
 import LecturesPanel from '@/components/LecturesPanel'
+import FirstAccess from '@/components/FirstAccess'
 
 export default {
   auth: false,
+  beforeRouteEnter(to, from, next) {
+    if (!from.name) {
+      next((vm) => {
+        vm.firstAccess = !vm.$auth.loggedIn
+      })
+    } else next()
+  },
   components: {
-    LecturesPanel
+    LecturesPanel,
+    FirstAccess
+  },
+  data() {
+    return {
+      firstAccess: false
+    }
   }
 }
 </script>

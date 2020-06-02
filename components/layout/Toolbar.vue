@@ -1,12 +1,11 @@
 <template>
   <div>
     <v-toolbar id="toolbar" class="primary" flat dense>
-      <v-btn v-if="$auth.loggedIn" text @click="drawer = true">
+      <v-btn text @click="drawer = true">
         <v-icon :color="$vuetify.theme.dark ? '' : 'secondary'">
           menu
         </v-icon>
       </v-btn>
-      <Login v-else :first-access="firstAccess" />
       <v-divider vertical class="mr-4" />
       <v-icon class="mr-2" :color="$vuetify.theme.dark ? '' : 'secondary'">
         {{ $vuetify.theme.dark ? 'wb_sunny' : 'brightness_2' }}
@@ -17,8 +16,10 @@
         class="mr-1"
         hide-details
       />
+      <v-spacer />
+      <Login v-if="!$auth.loggedIn" :first-access="firstAccess" />
     </v-toolbar>
-    <v-navigation-drawer v-if="$auth.loggedIn" v-model="drawer" fixed temporary>
+    <v-navigation-drawer v-model="drawer" fixed temporary>
       <UserMenu />
     </v-navigation-drawer>
   </div>

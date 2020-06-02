@@ -46,6 +46,7 @@
 </template>
 <script>
 export default {
+  auth: false,
   data() {
     let perPage = 6
     if (this.$vuetify.breakpoint.md) {

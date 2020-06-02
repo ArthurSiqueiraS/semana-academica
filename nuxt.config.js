@@ -105,13 +105,16 @@ export default {
   pwa: {
     manifest: {
       lang: 'pt',
-      name: process.npm_package_title,
-      short_name: 'SAM 2020'
+      name: process.npm_package_title
     },
     meta: {
       name: process.npm_package_title,
       lang: 'pt',
       ogImage: 'https://sam2020.netlify.app/logo_green.png'
+    },
+    icon: {
+      iconSrc: '@/static/pwa_icon.png',
+      iconFileName: 'pwa_icon.png'
     }
   },
   /*

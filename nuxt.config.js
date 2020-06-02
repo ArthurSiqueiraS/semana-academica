@@ -106,7 +106,7 @@ export default {
     manifest: {
       lang: 'pt',
       name: process.npm_package_title,
-      short_name: 'SAM 2020',
+      short_name: 'Semana Acadêmica de Medicina',
       description: process.npm_package_description,
       background_color: '#00a398'
     },

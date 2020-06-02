@@ -21,8 +21,11 @@ export default {
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s' + (dev ? ' - Dev' : ''),
-    title: 'Semana Acadêmica de Medicina UFPEL 2020',
+    titleTemplate: '%s 2020' + (dev ? ' - Dev' : ''),
+    title: process.env.npm_package_title,
+    htmlAttrs: {
+      lang: 'pt'
+    },
     meta: [
       { charset: 'utf-8' },
       {
@@ -33,12 +36,22 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: 'XXXVI Semana Acadêmica de Medicina UFPEL- de 27/07 a 31/07'
+        content: process.env.npm_package_description
       },
       {
         hid: 'og:image',
         name: 'og:image',
         content: 'https://sam2020.netlify.app/logo_green.png'
+      },
+      {
+        hid: 'og:title',
+        name: 'og:title',
+        content: process.env.npm_package_title
+      },
+      {
+        hid: 'og:description',
+        name: 'og:description',
+        content: process.env.npm_package_description
       }
     ],
     link: [
@@ -89,6 +102,13 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa'
   ],
+  pwa: {
+    meta: {
+      name: process.npm_package_title,
+      lang: 'pt',
+      ogImage: 'https://sam2020.netlify.app/logo_green.png'
+    }
+  },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options

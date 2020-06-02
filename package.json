@@ -1,8 +1,9 @@
 {
   "name": "semana-academica",
+  "title": "Semana Acadêmica de Medicina UFPEL",
   "version": "1.0.0",
-  "description": "Plataforma digital da Semana Acadêmica UFPEL",
-  "author": "Arthur Siqueira",
+  "description": "XXXVI Semana Acadêmica de Medicina UFPEL- de 27/07 a 31/07",
+  "author": "Arthur Siqueira e Silva",
   "private": true,
   "scripts": {
     "dev": "nuxt",

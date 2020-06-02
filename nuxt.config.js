@@ -103,6 +103,11 @@ export default {
     '@nuxtjs/pwa'
   ],
   pwa: {
+    manifest: {
+      lang: 'pt',
+      name: process.npm_package_title,
+      short_name: 'SAM 2020'
+    },
     meta: {
       name: process.npm_package_title,
       lang: 'pt',

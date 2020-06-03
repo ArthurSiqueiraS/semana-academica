@@ -122,7 +122,8 @@ export default {
    */
   axios: {
     progress: true,
-    credentials: true
+    credentials: true,
+    baseUrl
   },
   auth: {
     strategies: {

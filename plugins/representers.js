@@ -18,7 +18,7 @@ export default function(_, inject) {
       day,
       time,
       link: l.link,
-      thumbnail: l.thumbnail
+      thumbnail: process.env.baseUrl + l.thumbnail
     }
   }
 

@@ -15,10 +15,10 @@
               {{ lecture.time }}
             </h4>
             <v-divider vertical class="mx-8 d-none d-md-inline" />
-            <v-card flat class="my-4 mr-md-6">
+            <v-card height="250" width="300" flat class="my-4 mr-md-6">
               <v-img
-                max-width="300"
-                max-height="250"
+                max-width="100%"
+                max-height="100%"
                 gradient="to bottom left, rgb(76, 30, 118, .15), rgb(0, 163, 152, 0.2)"
                 :src="lecture.thumbnail"
               />
@@ -53,10 +53,15 @@ export default {
     }
   },
   created() {
-    this.$axios.get('/lectures').then((response) => {
+    this.fetchLectures()
+  },
+  methods: {
+    async fetchLectures() {
+      const response = await this.$axios.get('/lectures')
+
       const lectures = response.data.data.map(this.$representers.lecture)
       this.lectures = _.groupBy(lectures, (l) => l.day)
-    })
+    }
   }
 }
 </script>

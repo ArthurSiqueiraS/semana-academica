@@ -3,24 +3,22 @@
     <div v-if="$auth.loggedIn" class="">
       <div class="px-8 pt-4">
         <div class="title">John Doe</div>
-        Inscrição:
-        <span v-if="$auth.user.approved" class="success--text">Aprovada</span>
-        <span v-if="$auth.user.approved == null" class="warning--text"
-          >Pendente</span
-        >
-        <span v-if="$auth.user.approved == false" class="error--text"
-          >Rejeitada</span
-        >
-        <div class="d-flex flex-column align-start pt-2">
-          <v-btn
-            v-for="item in userMenu"
-            :key="item.name"
-            class=""
-            text
-            @click="item.click"
+        <div v-if="!$auth.hasScope()">
+          Inscrição:
+          <span v-if="$auth.user.approved" class="success--text">Aprovada</span>
+          <span v-if="$auth.user.approved == null" class="warning--text"
+            >Pendente</span
           >
-            {{ item.name }}
-          </v-btn>
+          <span v-if="$auth.user.approved == false" class="error--text"
+            >Rejeitada</span
+          >
+        </div>
+        <div class="d-flex flex-column align-start pt-2">
+          <div v-for="item in userMenu" :key="item.name">
+            <v-btn text @click="item.click">
+              {{ item.name }}
+            </v-btn>
+          </div>
         </div>
       </div>
     </div>
@@ -55,7 +53,6 @@
 export default {
   data() {
     return {
-      userMenu: [{ name: 'Sair', click: this.logout }],
       navigationMenu: [
         { name: 'Cronograma', url: '/', icon: 'schedule', click: () => {} },
         {
@@ -65,6 +62,20 @@ export default {
           click: () => {}
         }
       ]
+    }
+  },
+  computed: {
+    userMenu() {
+      const userMenu = [{ name: 'Sair', click: this.logout }]
+
+      if (this.$auth.hasScope()) {
+        userMenu.unshift({
+          name: 'Admin',
+          click: () => this.$router.push('/admin')
+        })
+      }
+
+      return userMenu
     }
   },
   methods: {

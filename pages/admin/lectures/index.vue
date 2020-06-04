@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%" class="lectures-table">
     <v-data-table
       v-model="selected"
       :headers="headers"
@@ -17,6 +17,10 @@
       <template v-slot:top>
         <v-toolbar dense flat class="accent">
           <div class="title white--text">Palestras</div>
+          <v-spacer />
+          <v-btn small depressed color="primary" to="/admin/lectures/new">
+            Adicionar palestra
+          </v-btn>
         </v-toolbar>
       </template>
       <template v-slot:item.thumbnail="{ item }">
@@ -26,7 +30,7 @@
           tile
           flat
           class="my-3"
-          style="padding: 2px"
+          style="padding: 3px"
           color="primary"
         >
           <v-img :src="item.thumbnail" max-height="100%" max-width="100%" />
@@ -79,8 +83,15 @@ export default {
       this.lectures = response.data.data.map(this.$representers.lecture)
     },
     editLecture(lecture) {
-      console.log(lecture)
+      this.$router.push(`/admin/lectures/${lecture.id}`)
     }
   }
 }
 </script>
+<style lang="scss">
+.lectures-table {
+  td {
+    cursor: pointer !important;
+  }
+}
+</style>

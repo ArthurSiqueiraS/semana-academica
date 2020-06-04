@@ -4,38 +4,38 @@
       <v-tab v-for="day in days" :key="day">{{ day }}</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
-      <v-tab-item v-for="day in days" :key="day" class="primary--text pa-8">
-        <div
-          v-for="(lecture, index) in lectures[day]"
-          :key="index"
-          class="px-md-12"
-        >
-          <div class="d-flex flex-column flex-md-row align-center ma-2">
-            <h4 class="font-weight-bold">
-              {{ lecture.time }}
-            </h4>
-            <v-divider vertical class="mx-8 d-none d-md-inline" />
-            <v-card height="250" width="300" flat class="my-4 mr-md-6">
-              <v-img
-                max-width="100%"
-                max-height="100%"
-                gradient="to bottom left, rgb(76, 30, 118, .15), rgb(0, 163, 152, 0.2)"
-                :src="lecture.thumbnail"
-              />
-            </v-card>
-            <div class="text-center text-md-left">
-              <h2>{{ lecture.title }}</h2>
-              <h3 class="info--text mt-2">{{ lecture.speaker }}</h3>
-              <div
-                v-for="(line, i) in lecture.description"
-                :key="i"
-                class="info--text"
-              >
-                {{ line }}<br />
+      <v-tab-item v-for="day in days" :key="day" class="primary--text">
+        <div class="d-flex justify-center">
+          <v-col cols="12" lg="9">
+            <div v-for="(lecture, index) in lectures[day]" :key="index">
+              <div class="d-flex flex-column flex-md-row align-center ma-2">
+                <h4 class="font-weight-bold">
+                  {{ lecture.time }}
+                </h4>
+                <v-divider vertical class="mx-8 d-none d-md-inline" />
+                <v-card height="250" width="300" flat class="my-4 mr-md-6">
+                  <v-img
+                    max-width="100%"
+                    max-height="100%"
+                    gradient="to bottom left, rgb(76, 30, 118, .15), rgb(0, 163, 152, 0.2)"
+                    :src="lecture.thumbnail"
+                  />
+                </v-card>
+                <div class="text-center text-md-left">
+                  <h2>{{ lecture.title }}</h2>
+                  <h3 class="info--text mt-2">{{ lecture.speaker }}</h3>
+                  <div
+                    v-for="(line, i) in lecture.description.split('\n')"
+                    :key="i"
+                    class="info--text"
+                  >
+                    {{ line }}<br />
+                  </div>
+                </div>
               </div>
+              <v-divider v-if="index < lectures[day].length - 1" />
             </div>
-          </div>
-          <v-divider v-if="index < lectures[day].length - 1" />
+          </v-col>
         </div>
       </v-tab-item>
     </v-tabs-items>

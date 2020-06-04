@@ -1,6 +1,6 @@
 export default function(_, inject) {
   function lecture(l) {
-    const date = new Date(l.schedule_time)
+    let date = new Date(l.schedule_time)
     const day = `${('0' + date.getDate()).slice(-2)}/${(
       '0' +
       (date.getMonth() + 1)
@@ -10,11 +10,16 @@ export default function(_, inject) {
       '0' + date.getMinutes()
     ).slice(-2)}`
 
+    date = `${date.getUTCFullYear()}-${('0' + (date.getMonth() + 1)).slice(
+      -2
+    )}-${('0' + date.getDate()).slice(-2)}`
+
     return {
       id: l.id,
       title: l.title,
       speaker: l.speaker,
-      description: l.description.split('\n'),
+      description: l.description,
+      date,
       day,
       time,
       link: l.link,

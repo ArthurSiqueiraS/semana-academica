@@ -20,11 +20,11 @@
             >{{ option.icon }}</v-icon
           >
         </div>
-        <v-card-content
+        <div
           class="accent white--text text-uppercase text-center font-weight-bold py-2"
         >
           {{ option.name }}
-        </v-card-content>
+        </div>
       </v-card>
     </v-hover>
   </div>

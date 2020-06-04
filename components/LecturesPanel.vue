@@ -26,9 +26,13 @@
             <div class="text-center text-md-left">
               <h2>{{ lecture.title }}</h2>
               <h3 class="info--text mt-2">{{ lecture.speaker }}</h3>
-              <p class="info--text">
-                {{ lecture.description }}
-              </p>
+              <div
+                v-for="(line, i) in lecture.description"
+                :key="i"
+                class="info--text"
+              >
+                {{ line }}<br />
+              </div>
             </div>
           </div>
           <v-divider v-if="index < lectures[day].length - 1" />

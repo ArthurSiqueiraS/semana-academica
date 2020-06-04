@@ -14,7 +14,7 @@ export default function(_, inject) {
       id: l.id,
       title: l.title,
       speaker: l.speaker,
-      description: l.description,
+      description: l.description.split('\n'),
       day,
       time,
       link: l.link,

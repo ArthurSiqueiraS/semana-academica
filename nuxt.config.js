@@ -167,7 +167,8 @@ export default {
           info: colors.grey.base,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3
+          success: colors.green.accent3,
+          background: colors.grey.darken5
         },
         light: {
           primary: '#00a398',
@@ -176,7 +177,8 @@ export default {
           info: colors.grey.base,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3
+          success: colors.green.accent3,
+          background: colors.grey.lighten5
         }
       }
     }

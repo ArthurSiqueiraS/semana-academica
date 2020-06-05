@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <Toolbar />
-    <v-content>
+    <v-content class="background">
       <nuxt />
     </v-content>
     <v-fab-transition>

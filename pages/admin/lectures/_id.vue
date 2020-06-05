@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex justify-center py-8" style="width: 100%">
     <v-col cols="12" md="8" lg="5">
-      <v-form>
+      <v-form ref="form" :value="valid" lazy-validation>
         <h2 class="text-uppercase primary--text mb-8 text-center">
           Adicionar Palestra
         </h2>
@@ -11,6 +11,7 @@
               v-model="lecture.title"
               hide-details
               clearable
+              :rules="[(v) => !!v]"
               label="Título da palestra"
               class="pr-8"
             />
@@ -18,6 +19,7 @@
               v-model="lecture.speaker"
               hide-details
               clearable
+              :rules="[(v) => !!v]"
               label="Palestrante"
             />
           </v-row>
@@ -31,6 +33,7 @@
               :rows="3"
               dense
               hide-details
+              :rules="[(v) => !!v]"
               label="Resumo do palestrante"
             />
           </v-row>
@@ -48,7 +51,8 @@
                 full-width
                 scrollable
                 locale="pt-br"
-                style="height: 400px"
+                :style="{ ...invalidStyle(datePickerValid), height: '400px' }"
+                @input="datePickerValid = true"
               />
             </v-col>
           </v-hover>
@@ -60,7 +64,8 @@
                 full-width
                 format="24hr"
                 scrollable
-                style="height: 400px"
+                :style="{ ...invalidStyle(timePickerValid), height: '400px' }"
+                @input="timePickerValid = true"
               />
             </v-col>
           </v-hover>
@@ -78,15 +83,17 @@
           <v-row v-cloak no-gutters align="center">
             <v-snackbar
               v-model="fileFormatError"
+              color="error"
               style="cursor: pointer"
               @click="fileFormatError = false"
             >
               Formato de arquivo inválido
             </v-snackbar>
-            <v-snackbar v-model="fileDimensionsError">
+            <v-snackbar v-model="fileDimensionsError" color="error">
               A imagem deve ter pelo menos 300px de largura e 250px de altura
             </v-snackbar>
             <v-file-input
+              ref="fileInput"
               v-model="thumbnailFile"
               :hint="
                 $vuetify.breakpoint.lgAndUp &&
@@ -97,6 +104,13 @@
               label="Capa da palestra"
               accept="image/*"
               prepend-icon="add_a_photo"
+              :rules="[
+                (v) =>
+                  !!v ||
+                  'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
+              ]"
+              @blur="fileValid = $refs.fileInput && $refs.fileInput.validate()"
+              @change="validateFile"
             >
               <template v-slot:selection="{ text }">
                 <v-chip small label color="primary">
@@ -109,6 +123,7 @@
               width="150"
               height="125"
               class="ml-8 d-flex align-center"
+              :style="invalidStyle(fileValid)"
             >
               <v-img
                 v-if="thumbnailUrl"
@@ -118,15 +133,15 @@
               >
               </v-img>
               <div v-else class="text-center">
-                <v-card-subtitle>
+                <div class="subtitle-2 font-weight-light">
                   Tamanho mínimo: {{ minWidth }}x{{ minHeight }}
-                </v-card-subtitle>
+                </div>
               </div>
             </v-card>
           </v-row>
         </v-card>
         <div class="text-center">
-          <v-btn color="primary mt-8 px-8">Salvar</v-btn>
+          <v-btn color="primary mt-8 px-8" @click="validate">Salvar</v-btn>
         </div>
       </v-form>
     </v-col>
@@ -155,6 +170,10 @@ export default {
   },
   data() {
     return {
+      valid: true,
+      datePickerValid: true,
+      timePickerValid: true,
+      fileValid: true,
       thumbnailFile: null,
       draggingOver: 0,
       minWidth: 300,
@@ -172,27 +191,15 @@ export default {
       return ''
     }
   },
-  methods: {
-    addDropFile(e) {
-      const files = Object.values(e.dataTransfer.files).filter((file) =>
-        file.type.split('/').includes('image')
-      )
-      if (files[0]) {
-        const vm = this
-        const img = new Image()
-        img.src = URL.createObjectURL(files[0])
-        img.onload = function() {
-          if (this.width >= vm.minWidth && this.height >= vm.minHeight) {
-            vm.thumbnailFile = files[0]
-          } else {
-            vm.fileDimensionsError = true
-          }
-        }
-      } else {
-        this.fileFormatError = true
-      }
-      this.draggingOver = 0
+  watch: {
+    fileFormatError(error) {
+      this.invalidateFileInput(error)
     },
+    fileDimensionsError(error) {
+      this.invalidateFileInput(error)
+    }
+  },
+  methods: {
     dropzoneEnter(e) {
       e.preventDefault()
 
@@ -200,6 +207,75 @@ export default {
     },
     dropzoneLeave() {
       this.draggingOver--
+    },
+    invalidStyle(cond) {
+      const errorColor = this.$vuetify.theme.currentTheme.error
+
+      if (!cond) {
+        return {
+          border: '1px solid ' + errorColor,
+          color: errorColor
+        }
+      }
+
+      return {}
+    },
+    addDropFile(e) {
+      this.$refs.fileInput.focus()
+      this.$refs.fileInput.blur()
+      this.resetSnackbar()
+
+      const files = Object.values(e.dataTransfer.files).filter((file) =>
+        file.type.split('/').includes('image')
+      )
+      if (files[0]) {
+        this.validateFile(files[0])
+      } else {
+        this.fileFormatError = true
+      }
+      this.draggingOver = 0
+    },
+    validateFile(file) {
+      this.resetSnackbar()
+
+      if (file) {
+        if (file.type.split('/').includes('image')) {
+          const vm = this
+          const img = new Image()
+          img.src = URL.createObjectURL(file)
+          img.onload = function() {
+            vm.fileValid = true
+            if (this.width >= vm.minWidth && this.height >= vm.minHeight) {
+              vm.thumbnailFile = file
+            } else {
+              vm.fileDimensionsError = true
+            }
+          }
+        } else {
+          this.fileFormatError = true
+        }
+      } else {
+        this.fileValid = this.$refs.fileInput.validate()
+      }
+    },
+    resetSnackbar() {
+      this.fileFormatError = false
+      this.fileDimensionsError = false
+    },
+    invalidateFileInput(error) {
+      if (error) {
+        this.thumbnailFile = null
+        this.fileValid = false
+      }
+    },
+    validate() {
+      this.datePickerValid = this.lecture.date
+      this.timePickerValid = this.lecture.time
+      this.valid =
+        this.$refs.form.validate() &&
+        this.datePickerValid &&
+        this.timePickerValid
+      this.fileValid = this.$refs.fileInput.validate()
     }
   }
 }

@@ -8,6 +8,29 @@ if (dev) baseUrl = 'http://192.168.0.8:8000'
 else if (test) baseUrl = 'https://semana-academica-medicina-dev.herokuapp.com'
 else baseUrl = 'https://semana-academica-medicina.herokuapp.com'
 
+const themes = {
+  dark: {
+    primary: colors.blue.darken2,
+    accent: colors.grey.darken3,
+    secondary: '#481973',
+    info: colors.grey.base,
+    warning: colors.amber.base,
+    error: colors.deepOrange.accent4,
+    success: colors.green.accent3,
+    background: colors.grey.darken5
+  },
+  light: {
+    primary: '#00a398',
+    secondary: '#ffffff',
+    accent: '#481973',
+    info: colors.grey.base,
+    warning: colors.amber.base,
+    error: colors.deepOrange.accent4,
+    success: colors.green.accent3,
+    background: colors.grey.lighten5
+  }
+}
+
 export default {
   env: {
     baseUrl
@@ -72,7 +95,7 @@ export default {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#fff' },
+  loading: { color: themes.light.primary },
   /*
    ** Global CSS
    */
@@ -108,7 +131,7 @@ export default {
       name: process.npm_package_title,
       short_name: 'Semana Acadêmica de Medicina',
       description: process.npm_package_description,
-      background_color: '#00a398'
+      background_color: themes.light.primary
     },
     meta: {
       name: process.npm_package_title,
@@ -159,28 +182,7 @@ export default {
     customVariables: ['~/assets/variables.scss'],
     theme: {
       dark: false,
-      themes: {
-        dark: {
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: '#481973',
-          info: colors.grey.base,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3,
-          background: colors.grey.darken5
-        },
-        light: {
-          primary: '#00a398',
-          secondary: '#ffffff',
-          accent: '#481973',
-          info: colors.grey.base,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3,
-          background: colors.grey.lighten5
-        }
-      }
+      themes
     }
   },
   /*

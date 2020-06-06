@@ -1,6 +1,9 @@
 <template>
-  <div style="height: 100%">
-    <div v-if="$auth.loggedIn" class="">
+  <div
+    style="height: 100%"
+    :class="$vuetify.theme.dark ? 'accent' : 'secondary'"
+  >
+    <div v-if="$auth.loggedIn">
       <div class="px-8 pt-4">
         <div class="title">John Doe</div>
         <div v-if="!$auth.hasScope()">
@@ -28,52 +31,40 @@
       </v-icon>
       <v-switch v-model="$vuetify.theme.dark" color="primary" class="mr-1" />
     </div>
-    <v-divider />
-    <v-list class="pt-0">
-      <v-subheader>
-        Navegação
-      </v-subheader>
-      <v-list-item
-        v-for="item in navigationMenu"
-        :key="item.name"
-        class="px-8"
-        :to="item.url"
-      >
-        <v-list-item-icon class="mr-6">
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>{{ item.name }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
+    <div v-if="$vuetify.breakpoint.mdAndDown">
+      <v-divider />
+      <v-list tile class="pt-0">
+        <v-subheader>
+          Navegação
+        </v-subheader>
+        <v-list-item
+          v-for="item in navigationMenu"
+          :key="item.name"
+          class="px-8"
+          :to="item.url"
+        >
+          <v-list-item-icon class="mr-6">
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </div>
   </div>
 </template>
 <script>
 export default {
-  data() {
-    return {
-      navigationMenu: [
-        { name: 'Cronograma', url: '/', icon: 'schedule', click: () => {} },
-        {
-          name: 'Mostra Científica',
-          url: '/publications',
-          icon: 'library_books',
-          click: () => {}
-        }
-      ]
+  props: {
+    navigationMenu: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
     userMenu() {
       const userMenu = [{ name: 'Sair', click: this.logout }]
-
-      if (this.$auth.hasScope()) {
-        userMenu.unshift({
-          name: 'Admin',
-          click: () => this.$router.push('/admin')
-        })
-      }
 
       return userMenu
     }

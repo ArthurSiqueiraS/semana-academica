@@ -1,11 +1,31 @@
 <template>
   <div>
     <v-toolbar id="toolbar" class="primary" flat dense>
-      <v-btn text @click="drawer = true">
-        <v-icon :color="$vuetify.theme.dark ? '' : 'secondary'">
-          menu
+      <v-btn
+        v-show="$route.path != '/'"
+        depressed
+        text
+        :color="$vuetify.theme.dark ? '' : 'secondary'"
+        @mouseup="() => $router.go(-1)"
+      >
+        <v-icon>
+          arrow_back
         </v-icon>
       </v-btn>
+      <div v-if="desktop" id="navigation-menu">
+        <v-btn
+          v-for="item in navigationMenu"
+          :key="item.name"
+          large
+          text
+          active-class="accent"
+          class="primary"
+          :to="item.url"
+        >
+          <v-icon size="21" left>{{ item.icon }}</v-icon>
+          {{ item.name }}
+        </v-btn>
+      </div>
       <v-spacer />
       <v-btn
         v-if="
@@ -16,12 +36,23 @@
         :color="$vuetify.theme.dark ? '' : 'secondary'"
         to="/login"
       >
-        <v-icon size="20" class="mr-1">login</v-icon>Participar
+        Participar<v-icon size="20" right>login</v-icon>
+      </v-btn>
+      <v-btn v-show="$auth.loggedIn && desktop" id="user-menu" text>
+        <v-icon :color="$vuetify.theme.dark ? '' : 'secondary'">
+          menu
+        </v-icon>
       </v-btn>
     </v-toolbar>
-    <v-navigation-drawer v-model="drawer" fixed temporary>
-      <UserMenu />
-    </v-navigation-drawer>
+    <v-menu
+      v-if="desktop"
+      open-on-hover
+      open-delay="250"
+      activator="#user-menu"
+      :close-on-content-click="false"
+    >
+      <UserMenu :navigation-menu="navigationMenu" />
+    </v-menu>
   </div>
 </template>
 
@@ -32,9 +63,15 @@ export default {
   components: {
     UserMenu
   },
-  data() {
-    return {
-      drawer: false
+  props: {
+    navigationMenu: {
+      type: Array,
+      default: () => []
+    }
+  },
+  computed: {
+    desktop() {
+      return this.$vuetify.breakpoint.lgAndUp
     }
   }
 }
@@ -43,6 +80,13 @@ export default {
 #toolbar {
   .v-toolbar__content {
     padding: 0 !important;
+  }
+
+  #navigation-menu {
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .v-btn {

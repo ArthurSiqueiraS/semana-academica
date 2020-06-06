@@ -1,15 +1,14 @@
 <template>
   <v-app>
-    <Toolbar />
+    <Toolbar :navigation-menu="navigationMenu" />
     <v-content class="background">
       <nuxt />
     </v-content>
-    <v-fab-transition>
+    <v-fab-transition v-if="$vuetify.breakpoint.lgAndUp">
       <v-btn
         v-show="fab"
         v-scroll="onScroll"
         fab
-        dark
         fixed
         bottom
         right
@@ -19,6 +18,14 @@
         <v-icon>keyboard_arrow_up</v-icon>
       </v-btn>
     </v-fab-transition>
+    <div v-else>
+      <v-btn large fab fixed bottom right @click="userMenu = true"
+        ><v-icon>menu</v-icon></v-btn
+      >
+      <v-navigation-drawer v-model="userMenu" right fixed temporary>
+        <UserMenu :navigation-menu="navigationMenu" />
+      </v-navigation-drawer>
+    </div>
     <Footer />
     <v-dialog
       v-model="remoteConnection"
@@ -53,16 +60,41 @@
 <script>
 import Footer from '@/components/layout/Footer'
 import Toolbar from '@/components/layout/Toolbar'
+import UserMenu from '@/components/UserMenu'
 
 export default {
   components: {
+    UserMenu,
     Footer,
     Toolbar
   },
   data() {
     return {
       fab: false,
-      remoteConnection: false
+      remoteConnection: false,
+      userMenu: false
+    }
+  },
+  computed: {
+    navigationMenu() {
+      const navigationMenu = [
+        { name: 'Palestras', url: '/', icon: 'person_pin' },
+        {
+          name: 'Mostra Científica',
+          url: '/publications',
+          icon: 'library_books'
+        }
+      ]
+
+      if (this.$auth.hasScope()) {
+        navigationMenu.push({
+          name: 'Administração',
+          url: '/admin',
+          icon: 'construction'
+        })
+      }
+
+      return navigationMenu
     }
   },
   watch: {

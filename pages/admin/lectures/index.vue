@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%" class="lectures-table">
     <v-data-table
-      v-model="selected"
+      v-model="selectedLectures"
       :headers="headers"
       :items="lectures"
       no-data-text="Nenhum dado encontrado."
@@ -18,8 +18,24 @@
         <v-toolbar dense flat class="accent">
           <div class="title white--text">Palestras</div>
           <v-spacer />
+          <v-btn
+            v-if="lectures.length > 0"
+            small
+            depressed
+            color="error mr-4"
+            @click="deleteDialog = true"
+          >
+            Excluir
+            {{
+              selectionActive
+                ? `selecionadas (${selectedLectures.length})`
+                : 'todas'
+            }}
+            <v-icon small right>delete</v-icon>
+          </v-btn>
           <v-btn small depressed color="primary" to="/admin/lectures/new">
             Adicionar palestra
+            <v-icon right small>add</v-icon>
           </v-btn>
         </v-toolbar>
       </template>
@@ -40,6 +56,45 @@
         {{ pageStart }} - {{ pageStop }} de {{ itemsLength }}
       </template>
     </v-data-table>
+    <v-dialog v-model="deleteDialog" width="400">
+      <v-sheet class="pa-4">
+        <v-card-title>
+          Deseja excluir
+          {{ selectionActive ? selectedLectures.length : 'todas as' }}
+          palestras?
+        </v-card-title>
+
+        <v-text-field
+          v-if="!selectionActive"
+          v-model="deleteAllConfirmation"
+          class="px-8 pb-4"
+          persistent-hint
+          :hint="`Digite '${deleteAllPassword}' para continuar`"
+          color="error"
+        />
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            text
+            color="accent"
+            :disabled="deleting"
+            @click="deleteDialog = false"
+            >Cancelar</v-btn
+          >
+          <v-btn
+            depressed
+            color="error"
+            :disabled="
+              !selectionActive && deleteAllConfirmation != deleteAllPassword
+            "
+            :loading="deleting"
+            @click="deleteLectures"
+            >Confirmar</v-btn
+          >
+        </v-card-actions>
+      </v-sheet>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -51,7 +106,7 @@ export default {
   },
   data() {
     return {
-      selected: [],
+      selectedLectures: [],
       headers: [
         { text: 'Data', value: 'day' },
         { text: 'Horário', value: 'time' },
@@ -69,10 +124,25 @@ export default {
         showFirstLastPage: true,
         class: 'red'
       },
-      lectures: []
+      lectures: [],
+      deleteDialog: false,
+      deleteAllConfirmation: '',
+      deleteAllPassword: 'Palestras',
+      deleting: false
     }
   },
-
+  computed: {
+    selectionActive() {
+      return this.selectedLectures.length > 0
+    }
+  },
+  watch: {
+    deleteDialog(open) {
+      if (!open) {
+        this.deleteAllConfirmation = ''
+      }
+    }
+  },
   created() {
     this.fetchLectures()
   },
@@ -84,6 +154,22 @@ export default {
     },
     editLecture(lecture) {
       this.$router.push(`/admin/lectures/${lecture.id}`)
+    },
+    async deleteLectures() {
+      this.deleting = true
+
+      const ids = this.selectedLectures.map((l) => l.id)
+      await this.$axios.delete('/lectures', {
+        params: { ids }
+      })
+      if (this.selectionActive) {
+        this.lectures = this.lectures.filter((l) => !ids.includes(l.id))
+      } else {
+        this.lectures = []
+      }
+      this.deleting = false
+      this.deleteDialog = false
+      this.selectedLectures = []
     }
   }
 }

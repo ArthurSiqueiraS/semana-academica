@@ -5,7 +5,7 @@
       :headers="headers"
       :items="lectures"
       no-data-text="Nenhum dado encontrado."
-      :disable-sort="$vuetify.breakpoint.smAndDown"
+      :disable-sort="mobile"
       show-select
       :items-per-page="5"
       :footer-props="footerProps"
@@ -18,25 +18,46 @@
         <v-toolbar dense flat class="accent">
           <div class="title white--text">Palestras</div>
           <v-spacer />
-          <v-btn
-            v-if="lectures.length > 0"
-            small
-            depressed
-            color="error mr-4"
-            @click="deleteDialog = true"
-          >
-            Excluir
-            {{
-              selectionActive
-                ? `selecionadas (${selectedLectures.length})`
-                : 'todas'
-            }}
-            <v-icon small right>delete</v-icon>
-          </v-btn>
-          <v-btn small depressed color="primary" to="/admin/lectures/new">
-            Adicionar palestra
-            <v-icon right small>add</v-icon>
-          </v-btn>
+
+          <div v-if="mobile">
+            <v-btn id="mobile-actions" small icon color="white"
+              ><v-icon>expand_more</v-icon></v-btn
+            >
+            <v-menu activator="#mobile-actions">
+              <v-list>
+                <div v-for="action in actions" :key="action.name">
+                  <v-list-item v-if="action.if">
+                    <v-btn
+                      class="d-flex justify-start transparent"
+                      small
+                      block
+                      depressed
+                      :color="action.color"
+                      @click="action.click"
+                    >
+                      <v-icon left>{{ action.icon }}</v-icon>
+                      {{ action.name }}
+                    </v-btn>
+                  </v-list-item>
+                </div>
+              </v-list>
+            </v-menu>
+          </div>
+          <div v-else class="d-flex flex-row-reverse">
+            <div v-for="action in actions" :key="action.name">
+              <v-btn
+                v-if="action.if"
+                small
+                depressed
+                class="ml-4"
+                :color="action.color"
+                @click="action.click"
+              >
+                {{ action.name }}
+                <v-icon small right>{{ action.icon }}</v-icon>
+              </v-btn>
+            </div>
+          </div>
         </v-toolbar>
       </template>
       <template v-slot:item.thumbnail="{ item }">
@@ -132,8 +153,33 @@ export default {
     }
   },
   computed: {
+    mobile() {
+      return this.$vuetify.breakpoint.smAndDown
+    },
     selectionActive() {
       return this.selectedLectures.length > 0
+    },
+    actions() {
+      return [
+        {
+          name: 'Adicionar palestra',
+          icon: 'add',
+          color: 'primary--text',
+          click: () => this.$router.push('/admin/lectures/new'),
+          if: true
+        },
+        {
+          name: `Excluir ${
+            this.selectionActive
+              ? 'selecionadas (' + this.selectedLectures.length + ')'
+              : 'todas'
+          }`,
+          icon: 'delete',
+          color: 'error--text',
+          click: () => (this.deleteDialog = true),
+          if: this.lectures.length > 0
+        }
+      ]
     }
   },
   watch: {

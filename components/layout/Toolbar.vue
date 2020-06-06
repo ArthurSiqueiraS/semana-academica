@@ -40,7 +40,7 @@
       </v-btn>
       <v-btn v-show="$auth.loggedIn && desktop" id="user-menu" text>
         <v-icon :color="$vuetify.theme.dark ? '' : 'secondary'">
-          menu
+          account_circle
         </v-icon>
       </v-btn>
     </v-toolbar>

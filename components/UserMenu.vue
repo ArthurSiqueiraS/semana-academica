@@ -26,7 +26,11 @@
       </div>
     </div>
     <div class="d-flex align-center ml-4">
-      <v-icon class="mr-2" :color="$vuetify.theme.dark ? '' : 'info'">
+      <v-icon
+        class="mr-2"
+        :color="$vuetify.theme.dark ? '' : 'info'"
+        style="transform: rotateY(180deg)"
+      >
         {{ $vuetify.theme.dark ? 'wb_sunny' : 'brightness_2' }}
       </v-icon>
       <v-switch v-model="$vuetify.theme.dark" color="primary" class="mr-1" />

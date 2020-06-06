@@ -19,9 +19,17 @@
       </v-btn>
     </v-fab-transition>
     <div v-else>
-      <v-btn large fab fixed bottom right @click="userMenu = true"
-        ><v-icon>menu</v-icon></v-btn
+      <v-btn
+        large
+        color="primary--text"
+        fab
+        fixed
+        bottom
+        right
+        @click="userMenu = true"
       >
+        <v-icon>menu_open</v-icon>
+      </v-btn>
       <v-navigation-drawer v-model="userMenu" right fixed temporary>
         <UserMenu :navigation-menu="navigationMenu" />
       </v-navigation-drawer>

@@ -1,27 +1,30 @@
 <template>
   <div class="d-flex justify-center py-8" style="width: 100%">
-    <v-col cols="12" md="8" lg="5">
+    <v-col cols="10" md="8" lg="6" xl="5">
       <v-form ref="form" :value="valid" lazy-validation>
         <h2 class="text-uppercase primary--text mb-8 text-center">
           Adicionar Palestra
         </h2>
-        <v-card class="px-6 pb-6 pt-3">
+        <v-card class="px-6 pb-6 pt-4">
           <v-row no-gutters>
-            <v-text-field
-              v-model="lecture.title"
-              hide-details
-              clearable
-              :rules="[(v) => !!v]"
-              label="Título da palestra"
-              class="pr-8"
-            />
-            <v-text-field
-              v-model="lecture.speaker"
-              hide-details
-              clearable
-              :rules="[(v) => !!v]"
-              label="Palestrante"
-            />
+            <v-col cols="12" md="6" class="pr-md-4 mt-0">
+              <v-text-field
+                v-model="lecture.title"
+                hide-details
+                clearable
+                :rules="[(v) => !!v]"
+                label="Título da palestra"
+              />
+            </v-col>
+            <v-col cols="12" md="6" class="pl-md-4 mt-8 mt-md-0">
+              <v-text-field
+                v-model="lecture.speaker"
+                hide-details
+                clearable
+                :rules="[(v) => !!v]"
+                label="Palestrante"
+              />
+            </v-col>
           </v-row>
         </v-card>
         <v-card class="mt-8 pa-6">
@@ -38,12 +41,12 @@
             />
           </v-row>
         </v-card>
-        <v-row no-gutters class="font-weight-light mt-8">
+        <v-row no-gutters class="font-weight-light">
           <v-hover v-slot:default="{ hover }">
             <v-col
               cols="12"
-              md="7"
-              :class="'pr-8 ' + (hover && 'primary--text')"
+              md="6"
+              :class="['pr-md-4 mt-8', hover && 'primary--text'].join(' ')"
             >
               <div style="transition: .5s">Data:</div>
               <v-date-picker
@@ -57,7 +60,11 @@
             </v-col>
           </v-hover>
           <v-hover v-slot:default="{ hover }">
-            <v-col cols="12" md="5" :class="hover && 'primary--text'">
+            <v-col
+              cols="12"
+              md="6"
+              :class="['pl-md-4 mt-8', hover && 'primary--text'].join(' ')"
+            >
               <div style="transition: .5s">Horário:</div>
               <v-time-picker
                 v-model="lecture.time"
@@ -92,52 +99,59 @@
             <v-snackbar v-model="fileDimensionsError" color="error">
               A imagem deve ter pelo menos 300px de largura e 250px de altura
             </v-snackbar>
-            <v-file-input
-              ref="fileInput"
-              v-model="thumbnailFile"
-              :hint="
-                $vuetify.breakpoint.lgAndUp &&
-                  'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
-              "
-              :hide-details="$vuetify.breakpoint.mdAndDown"
-              persistent-hint
-              label="Capa da palestra"
-              accept="image/*"
-              prepend-icon="add_a_photo"
-              :rules="[
-                (v) =>
-                  !!v ||
-                  'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
-              ]"
-              @blur="fileValid = $refs.fileInput && $refs.fileInput.validate()"
-              @change="validateFile"
-            >
-              <template v-slot:selection="{ text }">
-                <v-chip small label color="primary">
-                  {{ text }}
-                </v-chip>
-              </template>
-            </v-file-input>
-            <v-card
-              outlined
-              width="150"
-              height="125"
-              class="ml-8 d-flex align-center"
-              :style="invalidStyle(fileValid)"
-            >
-              <v-img
-                v-if="thumbnailUrl"
-                max-height="100%"
-                max-width="100%"
-                :src="thumbnailUrl"
+            <v-col cols="12" md="8">
+              <v-file-input
+                ref="fileInput"
+                v-model="thumbnailFile"
+                :hint="
+                  $vuetify.breakpoint.lgAndUp
+                    ? 'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
+                    : ''
+                "
+                :hide-details="$vuetify.breakpoint.mdAndDown"
+                persistent-hint
+                label="Capa da palestra"
+                accept="image/*"
+                prepend-icon="add_a_photo"
+                :rules="[
+                  (v) =>
+                    !!v ||
+                    'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
+                ]"
+                @blur="
+                  fileValid = $refs.fileInput && $refs.fileInput.validate()
+                "
+                @change="validateFile"
               >
-              </v-img>
-              <div v-else class="text-center">
-                <div class="subtitle-2 font-weight-light">
-                  Tamanho mínimo: {{ minWidth }}x{{ minHeight }}
+                <template v-slot:selection="{ text }">
+                  <v-chip small label color="primary">
+                    {{ text }}
+                  </v-chip>
+                </template>
+              </v-file-input>
+            </v-col>
+            <v-col cols="12" md="4" class="mt-4 pl-md-4 d-flex justify-center">
+              <v-card
+                outlined
+                width="150"
+                height="125"
+                class="d-flex align-center"
+                :style="invalidStyle(fileValid)"
+              >
+                <v-img
+                  v-if="thumbnailUrl"
+                  max-height="100%"
+                  max-width="100%"
+                  :src="thumbnailUrl"
+                >
+                </v-img>
+                <div v-else class="text-center">
+                  <div class="subtitle-2 font-weight-light">
+                    Tamanho mínimo: {{ minWidth }}x{{ minHeight }}
+                  </div>
                 </div>
-              </div>
-            </v-card>
+              </v-card>
+            </v-col>
           </v-row>
         </v-card>
         <div class="text-center">

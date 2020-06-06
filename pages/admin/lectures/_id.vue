@@ -141,7 +141,9 @@
           </v-row>
         </v-card>
         <div class="text-center">
-          <v-btn color="primary mt-8 px-8" @click="validate">Salvar</v-btn>
+          <v-btn color="primary mt-8 px-8" :loading="saving" @click="validate"
+            >Salvar</v-btn
+          >
         </div>
       </v-form>
     </v-col>
@@ -179,7 +181,8 @@ export default {
       minWidth: 300,
       minHeight: 250,
       fileFormatError: false,
-      fileDimensionsError: false
+      fileDimensionsError: false,
+      saving: false
     }
   },
   computed: {
@@ -269,13 +272,29 @@ export default {
       }
     },
     validate() {
-      this.datePickerValid = this.lecture.date
-      this.timePickerValid = this.lecture.time
+      this.datePickerValid = this.lecture.date != null
+      this.timePickerValid = this.lecture.time !== ''
+      this.fileValid = this.$refs.fileInput.validate()
       this.valid =
         this.$refs.form.validate() &&
         this.datePickerValid &&
         this.timePickerValid
-      this.fileValid = this.$refs.fileInput.validate()
+
+      if (this.valid) {
+        this.createLecture()
+      }
+    },
+    async createLecture() {
+      this.saving = true
+      const formData = new FormData()
+      formData.set('file', this.thumbnailFile)
+      Object.keys(this.lecture).forEach((k) => {
+        formData.set(k, this.lecture[k])
+      })
+
+      await this.$axios.post('/lectures', formData)
+      this.saving = false
+      this.$router.go(-1)
     }
   }
 }

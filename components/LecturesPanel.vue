@@ -15,8 +15,8 @@
                 <v-divider vertical class="mx-8 d-none d-md-inline" />
                 <v-card height="250" width="300" flat class="my-4 mr-md-6">
                   <v-img
-                    max-width="100%"
-                    max-height="100%"
+                    width="100%"
+                    height="100%"
                     gradient="to bottom left, rgb(76, 30, 118, .15), rgb(0, 163, 152, 0.2)"
                     :src="lecture.thumbnail"
                   />

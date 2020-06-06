@@ -134,6 +134,7 @@ export default {
       background_color: themes.light.primary
     },
     meta: {
+      mobileAppIOS: true,
       name: process.npm_package_title,
       lang: 'pt',
       ogImage: 'https://sam2020.netlify.app/logo_green.png'

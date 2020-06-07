@@ -5,13 +5,12 @@
         <h2 class="text-uppercase primary--text mb-8 text-center">
           {{ id ? 'Editar' : 'Adicionar' }} Palestra
         </h2>
-        <v-row>
+        <v-row v-if="id" no-gutters class="mb-2">
           <v-spacer />
           <v-btn
             small
             color="error"
             text
-            class="mb-2 mr-2"
             :disabled="saving"
             @click="deleteDialog = true"
           >

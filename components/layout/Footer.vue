@@ -19,8 +19,16 @@
     </v-row>
 
     <!-- Legal Footer -->
-    <div class="pb-2 secondary--text">
-      2020
+    <div class="pb-2 secondary--text d-flex">
+      2020 -
+      <a
+        class="d-flex align-center secondary--text"
+        href="https://github.com/ArthurSiqueiraS"
+        target="blank"
+      >
+        <v-icon size="20" color="secondary" class="mx-1">mdi-github</v-icon
+        >ArthurSiqueiraS
+      </a>
 
       <!-- <v-spacer /> -->
       <!-- <div>

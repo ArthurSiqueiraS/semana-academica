@@ -3,8 +3,49 @@
     <v-col cols="10" md="8" lg="6" xl="5">
       <v-form ref="form" :value="valid" lazy-validation>
         <h2 class="text-uppercase primary--text mb-8 text-center">
-          Adicionar Palestra
+          {{ id ? 'Editar' : 'Adicionar' }} Palestra
         </h2>
+        <v-row>
+          <v-spacer />
+          <v-btn
+            small
+            color="error"
+            text
+            class="mb-2 mr-2"
+            :disabled="saving"
+            @click="deleteDialog = true"
+          >
+            <v-icon small left>delete</v-icon>
+            Excluir
+          </v-btn>
+        </v-row>
+        <v-dialog v-model="deleteDialog" width="400" :persistent="deleting">
+          <v-sheet class="pa-4">
+            <v-card-title>
+              Deseja excluir a palestra?
+            </v-card-title>
+
+            <v-card-actions>
+              <v-spacer />
+              <v-btn
+                text
+                color="accent"
+                :disabled="deleting"
+                @click="deleteDialog = false"
+              >
+                Cancelar
+              </v-btn>
+              <v-btn
+                depressed
+                color="error"
+                :loading="deleting"
+                @click="deleteLecture"
+              >
+                Confirmar
+              </v-btn>
+            </v-card-actions>
+          </v-sheet>
+        </v-dialog>
         <v-card class="px-6 pb-6 pt-4">
           <v-row no-gutters>
             <v-col cols="12" md="6" class="pr-md-4 mt-0">
@@ -116,6 +157,7 @@
                 :rules="[
                   (v) =>
                     !!v ||
+                    lecture.thumbnail != null ||
                     'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
                 ]"
                 @blur="
@@ -139,10 +181,10 @@
                 :style="invalidStyle(fileValid)"
               >
                 <v-img
-                  v-if="thumbnailUrl"
+                  v-if="thumbnailUrl || lecture.thumbnail"
                   max-height="100%"
                   max-width="100%"
-                  :src="thumbnailUrl"
+                  :src="thumbnailUrl || lecture.thumbnail"
                 >
                 </v-img>
                 <div v-else class="text-center">
@@ -155,9 +197,20 @@
           </v-row>
         </v-card>
         <div class="text-center">
-          <v-btn color="primary mt-8 px-8" :loading="saving" @click="validate"
-            >Salvar</v-btn
+          <v-btn
+            color="primary"
+            class="mt-8 px-8"
+            :loading="saving"
+            :disabled="deleting"
+            @click="validate"
           >
+            Salvar
+          </v-btn>
+          <v-slide-y-transition>
+            <div v-if="!valid" class="mt-4 error--text">
+              Preencha todos os campos
+            </div>
+          </v-slide-y-transition>
         </div>
       </v-form>
     </v-col>
@@ -174,7 +227,9 @@ export default {
       time: '',
       thumbnail: ''
     }
-    if (route.params.id !== 'new') {
+
+    const id = route.params.id
+    if (id !== 'new') {
       try {
         const response = await $axios.get(`/lectures/${route.params.id}`)
         lecture = app.$representers.lecture(response.data)
@@ -182,7 +237,7 @@ export default {
         redirect('/admin/lectures')
       }
     }
-    return { lecture }
+    return { lecture, id: id !== 'new' && id }
   },
   data() {
     return {
@@ -196,7 +251,9 @@ export default {
       minHeight: 250,
       fileFormatError: false,
       fileDimensionsError: false,
-      saving: false
+      saving: false,
+      deleteDialog: false,
+      deleting: false
     }
   },
   computed: {
@@ -301,13 +358,28 @@ export default {
     async createLecture() {
       this.saving = true
       const formData = new FormData()
-      formData.set('file', this.thumbnailFile)
       Object.keys(this.lecture).forEach((k) => {
         formData.set(k, this.lecture[k])
       })
 
-      await this.$axios.post('/lectures', formData)
+      if (this.thumbnailFile) {
+        formData.set('file', this.thumbnailFile)
+      }
+
+      if (!this.id) {
+        await this.$axios.post('/lectures', formData)
+      } else {
+        await this.$axios.put(`/lectures/${this.id}`, formData)
+      }
+
       this.saving = false
+      this.$router.go(-1)
+    },
+    async deleteLecture() {
+      this.deleting = true
+      await this.$axios.delete('/lectures', { params: { ids: [this.id] } })
+
+      this.deleting = false
       this.$router.go(-1)
     }
   }

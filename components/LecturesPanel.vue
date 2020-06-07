@@ -63,8 +63,14 @@ export default {
     async fetchLectures() {
       const response = await this.$axios.get('/lectures')
 
-      const lectures = response.data.data.map(this.$representers.lecture)
-      this.lectures = _.groupBy(lectures, (l) => l.day)
+      const lectures = response.data.data.sort((a, b) => {
+        return new Date(a.schedule_time) > new Date(b.schedule_time) ? 1 : -1
+      })
+
+      this.lectures = _.groupBy(
+        lectures.map(this.$representers.lecture),
+        (l) => l.day
+      )
     }
   }
 }

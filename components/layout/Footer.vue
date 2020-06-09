@@ -9,7 +9,6 @@
             : '@/assets/images/SAM_logo_white.png')
         "
         width="150"
-        alt="UFPEL"
       />
       <!-- <img
         src="@/assets/images/UFPEL-ESCUDO-2013.png"

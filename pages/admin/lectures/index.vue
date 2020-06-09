@@ -20,9 +20,10 @@
           <v-spacer />
 
           <div v-if="mobile">
-            <v-btn id="mobile-actions" small icon color="white"
-              ><v-icon>expand_more</v-icon></v-btn
-            >
+            <v-btn id="mobile-actions" text small color="white">
+              Ações
+              <v-icon>expand_more</v-icon>
+            </v-btn>
             <v-menu activator="#mobile-actions">
               <v-list>
                 <div v-for="action in actions" :key="action.name">

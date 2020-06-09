@@ -156,7 +156,7 @@
                 :rules="[
                   (v) =>
                     !!v ||
-                    lecture.thumbnail != null ||
+                    lecture.thumbnail != '' ||
                     'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
                 ]"
                 @blur="

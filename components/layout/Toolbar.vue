@@ -18,6 +18,7 @@
           :key="item.name"
           large
           text
+          exact
           active-class="accent"
           class="primary"
           :to="item.url"

@@ -17,7 +17,8 @@
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/pwa": "^3.0.0-0",
     "actioncable-vue": "^2.2.2",
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.0.0",
+    "vue-youtube": "^1.4.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^2.0.0",

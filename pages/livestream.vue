@@ -37,9 +37,8 @@
           @mouseleave="hideHud"
           @dblclick.prevent="fullscreenToggle"
         >
-          <v-overlay z-index="0" absolute :value="mobile" opacity="0" />
+          <v-overlay absolute :value="mobile" opacity="0" />
           <v-overlay
-            z-index="0"
             absolute
             :value="hud"
             :opacity="playing ? (mobile ? 0 : 0.5) : 1"
@@ -52,13 +51,27 @@
               class="transparent d-flex flex-column"
             >
               <div class="d-flex flex-grow-1 align-center justify-center">
-                <div v-if="!playing && !buffering" class="text-center">
+                <div v-if="landing" class="text-center">
+                  <v-btn
+                    x-large
+                    color="primary"
+                    rounded
+                    depressed
+                    @click="play()"
+                  >
+                    Iniciar transmissão<v-icon right x-large>play_arrow</v-icon>
+                  </v-btn>
+                </div>
+                <div
+                  v-if="!playing && !buffering && !landing"
+                  class="text-center"
+                >
                   <v-btn
                     :x-large="!mobile"
                     class="mb-2 mb-md-4 mb-lg-8"
                     fab
                     outlined
-                    @click="playing ? stop() : play()"
+                    @click="play()"
                   >
                     <v-icon x-large>play_arrow</v-icon>
                   </v-btn>
@@ -73,7 +86,10 @@
                   <v-progress-circular indeterminate />
                 </div>
               </div>
-              <div :class="'mx-lg-8 ' + (landscape ? 'mb-4' : '')">
+              <div
+                v-if="!landing"
+                :class="'mx-lg-8 ' + (landscape ? 'mb-4' : '')"
+              >
                 <v-divider />
                 <v-toolbar
                   color="transparent"
@@ -109,19 +125,28 @@
               </div>
             </v-card>
           </v-overlay>
+          <div
+            :style="{
+              position: 'absolute',
+              width: playerWidth + 'px',
+              height: playerHeight + 'px',
+              zIndex: 1
+            }"
+          ></div>
           <youtube
             ref="youtube"
+            style="z-index: 0"
             width="100%"
             height="100%"
             :video-id="videoId"
             :player-vars="{
-              autoplay: 1,
               controls: 0,
               mute: 1
             }"
             @playing=";(playing = true), (buffering = false)"
-            @buffering="buffering = true"
+            @buffering=";(landing = false), (buffering = true)"
             @ready="loadPlayer"
+            @paused="stop"
           ></youtube>
         </v-card>
       </v-fade-transition>
@@ -132,6 +157,7 @@
 export default {
   data() {
     return {
+      landing: true,
       videoId: 'i3gIkjwPm-k',
       loading: true,
       transitionDuration: 1000,
@@ -240,14 +266,16 @@ export default {
       this.hovers++
     },
     loadPlayer() {
-      this.play()
+      this.player.playVideo()
       this.player.mute()
 
       const time = this.mobile ? 8000 : 6000
       setTimeout(() => {
         setTimeout(() => {
+          this.stop()
           this.showPlayer = true
           this.player.unMute()
+          this.landing = true
         }, this.transitionDuration)
         this.loading = false
       }, time)

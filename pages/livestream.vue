@@ -32,13 +32,14 @@
           tile
           flat
           :ripple="false"
-          :style="{ width: playerWidth + 'px', height: playerHeight + 'px' }"
+          :style="{ width: hudWidth + 'px', height: hudHeight + 'px' }"
           @mousemove="hoverHud"
           @mouseleave="hideHud"
           @dblclick.prevent="fullscreenToggle"
         >
-          <v-overlay absolute :value="mobile" opacity="0" />
+          <v-overlay z-index="0" absolute :value="mobile" opacity="0" />
           <v-overlay
+            z-index="0"
             absolute
             :value="hud"
             :opacity="playing ? (mobile ? 0 : 0.5) : 1"
@@ -46,8 +47,8 @@
             <v-card
               tile
               flat
-              :width="playerWidth"
-              :height="playerHeight"
+              :width="hudWidth"
+              :height="hudHeight"
               class="transparent d-flex flex-column"
             >
               <div class="d-flex flex-grow-1 align-center justify-center">
@@ -72,7 +73,7 @@
                   <v-progress-circular indeterminate />
                 </div>
               </div>
-              <div class="mt-auto mx-8">
+              <div :class="'mx-lg-8 ' + (landscape ? 'mb-4' : '')">
                 <v-divider />
                 <v-toolbar
                   color="transparent"
@@ -142,7 +143,9 @@ export default {
       volume: 50,
       hover: 0,
       hovers: 0,
-      mobileHud: false
+      mobileHud: false,
+      landscape: false,
+      hudWidth: null
     }
   },
   computed: {
@@ -177,6 +180,9 @@ export default {
         (this.mobile && this.mobileHud)
       )
     },
+    hudHeight() {
+      return (this.hudWidth / 16) * 9
+    },
     volumeIcon() {
       if (this.volume >= 70) return 'volume_up'
       if (this.volume > 0) return 'volume_down'
@@ -186,6 +192,23 @@ export default {
   watch: {
     volume(value) {
       this.player.setVolume(value)
+    },
+    fullscreen(fullscreen) {
+      this.landscape =
+        fullscreen && screen.orientation.type.includes('landscape')
+    },
+    landscape(landscape) {
+      const w = window.innerWidth
+      const h = window.innerHeight
+      if (this.fullscreen) {
+        this.hudWidth = landscape ? Math.max(w, h) : Math.min(w, h)
+      }
+    },
+    playerWidth: {
+      immediate: true,
+      handler(width) {
+        this.hudWidth = width
+      }
     }
   },
   mounted() {
@@ -193,6 +216,14 @@ export default {
     document.addEventListener('fullscreenchange', function() {
       vm.fullscreen = !vm.fullscreen
     })
+    window.addEventListener(
+      'orientationchange',
+      function() {
+        vm.landscape =
+          vm.fullscreen && screen.orientation.type.includes('landscape')
+      },
+      true
+    )
   },
   methods: {
     hoverHud() {

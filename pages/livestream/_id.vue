@@ -140,6 +140,7 @@
             height="100%"
             :video-id="videoId"
             :player-vars="{
+              autoplay: 0,
               controls: 0,
               mute: 1
             }"
@@ -266,21 +267,21 @@ export default {
       this.hovers++
     },
     loadPlayer() {
-      this.player.playVideo()
       this.player.mute()
+      this.player.playVideo()
 
       const time = this.mobile ? 8000 : 6000
       setTimeout(() => {
         setTimeout(() => {
           this.stop()
           this.showPlayer = true
-          this.player.unMute()
           this.landing = true
         }, this.transitionDuration)
         this.loading = false
       }, time)
     },
     play() {
+      if (this.landing) this.player.unMute()
       this.player.playVideo()
     },
     stop() {

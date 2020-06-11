@@ -158,7 +158,7 @@ export default {
   data() {
     return {
       landing: true,
-      videoId: 'i3gIkjwPm-k',
+      videoId: this.$route.params.id,
       loading: true,
       transitionDuration: 1000,
       showPlayer: false,

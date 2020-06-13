@@ -107,7 +107,8 @@ export default {
     '@/plugins/axios',
     '@/plugins/representers',
     '@/plugins/actioncable-vue',
-    '@/plugins/youtube'
+    '@/plugins/youtube',
+    '@/plugins/validations'
   ],
   /*
    ** Nuxt.js dev-modules

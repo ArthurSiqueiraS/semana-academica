@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-center my-4">
-    <v-col cols="12" sm="10" md="9" lg="8" xl="4">
+    <v-col cols="12" sm="10" md="8" lg="6" xl="4">
       <v-row no-gutters justify="end" class="mb-2">
         <v-btn small rounded depressed color="accent" to="/login">
           Já estou inscrito<v-icon small right>login</v-icon>
@@ -32,7 +32,7 @@
               <v-card class="pa-8" outlined flat shaped>
                 <v-form v-if="n == 1" ref="form" lazy-validation>
                   <div class="d-flex justify-center">
-                    <v-col cols="10">
+                    <v-col cols="12" sm="10">
                       <v-col cols="12">
                         <v-text-field
                           v-model="user.name"
@@ -162,13 +162,15 @@
                     </div>
                     <v-spacer />
                   </v-card-actions>
-                  <v-card-actions class="text-center mt-2">
-                    <v-spacer />
+                  <div
+                    class="d-flex flex-column-reverse flex-md-row align-center justify-center mt-2"
+                  >
                     <v-btn
-                      outlined
+                      :outlined="!mobile"
+                      :text="mobile"
                       rounded
                       color="info"
-                      class="mr-2"
+                      class="mt-2 mt-md-0 mr-md-2"
                       width="150"
                       :disabled="loading"
                       @click="lastStep"
@@ -185,8 +187,7 @@
                     >
                       Confirmar<v-icon small class="ml-1">check</v-icon>
                     </v-btn>
-                    <v-spacer />
-                  </v-card-actions>
+                  </div>
                 </div>
               </v-card>
             </v-stepper-content>
@@ -247,6 +248,9 @@ export default {
     }
   },
   computed: {
+    mobile() {
+      return this.$vuetify.breakpoint.smAndDown
+    },
     noDuplicates() {
       return !Object.values(this.duplicates)
         .map((d) => d.value)

@@ -143,8 +143,7 @@ export default {
       footerProps: {
         itemsPerPageText: 'Itens por página',
         itemsPerPageAllText: 'Todos',
-        showFirstLastPage: true,
-        class: 'red'
+        showFirstLastPage: true
       },
       lectures: [],
       deleteDialog: false,

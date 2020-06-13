@@ -92,14 +92,14 @@
                   </div>
                   <v-divider class="my-4" />
                   <v-card-actions>
-                    <v-spacer />
                     <v-slide-x-transition>
-                      <div v-if="!valid">
+                      <div v-if="!valid" class="error--text mr-2">
                         Preencha todos os campos corretamente
                       </div>
                     </v-slide-x-transition>
+                    <v-spacer />
                     <v-btn
-                      text
+                      depressed
                       rounded
                       color="primary"
                       class="px-4"
@@ -146,7 +146,7 @@
                       </v-row>
                     </v-card>
                     <div class="accent--text font-weight-bold mt-4">
-                      Sua senha de acesso: {{ user.cpf.replace(/\D/g, '') }}
+                      Sua senha de acesso: {{ password }}
                     </div>
                   </div>
                   <v-divider class="mt-8 mb-4" />
@@ -181,7 +181,7 @@
                       color="primary"
                       width="150"
                       :loading="loading"
-                      @click="nextStep"
+                      @click="createUser"
                     >
                       Confirmar<v-icon small class="ml-1">check</v-icon>
                     </v-btn>
@@ -207,6 +207,14 @@
         >{{ dup.text }} já cadastrado</v-alert
       >
     </v-col>
+    <v-snackbar
+      top
+      elevation="16"
+      :value="userCreated"
+      color="success"
+      @click="userCreated = false"
+      >Usuário criado com sucesso</v-snackbar
+    >
   </div>
 </template>
 <script>
@@ -234,7 +242,8 @@ export default {
         cpf: { text: 'CPF', value: false }
       },
       loading: false,
-      alertTransition: 'scale-transition'
+      alertTransition: 'scale-transition',
+      userCreated: false
     }
   },
   computed: {
@@ -242,6 +251,9 @@ export default {
       return !Object.values(this.duplicates)
         .map((d) => d.value)
         .includes(true)
+    },
+    password() {
+      return this.user.cpf.replace(/\D/g, '')
     }
   },
   methods: {
@@ -275,6 +287,17 @@ export default {
     },
     lastStep() {
       this.step--
+    },
+    async createUser() {
+      this.loading = true
+      await this.$axios.post('/users', {
+        ...this.user,
+        password: this.password
+      })
+
+      this.loading = false
+      this.userCreated = true
+      this.nextStep()
     }
   }
 }

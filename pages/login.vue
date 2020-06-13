@@ -15,8 +15,8 @@
       />
     </div>
     <v-form>
-      <div style="width: 300px" @keyup.enter="login()">
-        <v-text-field v-model="email" label="E-mail" />
+      <div style="width: 300px" @keyup.enter="signIn()">
+        <v-text-field v-model="login" label="E-mail ou matrícula" />
         <v-text-field
           v-model="password"
           :type="hidePassword ? 'password' : ''"
@@ -27,7 +27,7 @@
       </div>
       <v-slide-y-transition>
         <div v-if="notFound" class="error--text text-center">
-          E-mail ou senha incorretos
+          Credenciais incorretas, tente novamente.
         </div>
       </v-slide-y-transition>
       <div class="d-flex flex-column mt-4 align-center">
@@ -37,7 +37,7 @@
           rounded
           color="primary"
           :loading="loading"
-          @click="login"
+          @click="signIn"
         >
           Entrar
         </v-btn>
@@ -60,7 +60,7 @@ export default {
   auth: 'guest',
   data() {
     return {
-      email: '',
+      login: '',
       password: '',
       hidePassword: true,
       loading: false,
@@ -68,7 +68,7 @@ export default {
     }
   },
   methods: {
-    async login() {
+    async signIn() {
       this.loading = true
       this.notFound = false
 
@@ -76,7 +76,7 @@ export default {
         await this.$auth.loginWith('local', {
           data: {
             auth: {
-              email: this.email,
+              login: this.login,
               password: this.password
             }
           }

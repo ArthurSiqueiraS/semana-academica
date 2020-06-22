@@ -5,7 +5,7 @@
   >
     <div v-if="$auth.loggedIn">
       <div class="px-8 pt-4">
-        <div class="title">John Doe</div>
+        <div class="title">{{ $auth.user.name }}</div>
         <div v-if="!$auth.hasScope()">
           Inscrição:
           <span v-if="$auth.user.approved" class="success--text">Aprovada</span>

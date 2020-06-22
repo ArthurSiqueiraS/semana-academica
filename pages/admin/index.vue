@@ -1,5 +1,8 @@
 <template>
-  <div style="height: 100%" class="d-flex align-center justify-center">
+  <div
+    style="height: 100%"
+    class="d-flex flex-column flex-md-row align-center justify-center py-4"
+  >
     <v-hover
       v-for="option in options"
       v-slot:default="{ hover }"
@@ -7,7 +10,7 @@
     >
       <v-card
         color="primary"
-        class="d-flex flex-column mx-8"
+        class="d-flex flex-column mx-8 my-4"
         width="160"
         height="170"
         :to="option.link"
@@ -39,6 +42,7 @@ export default {
   data() {
     return {
       options: [
+        { icon: 'person', name: 'Inscrições', link: '/admin/users' },
         { icon: 'campaign', name: 'Palestras', link: '/admin/lectures' }
       ]
     }

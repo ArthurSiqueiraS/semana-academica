@@ -13,10 +13,7 @@
           class="primary d-flex flex-column align-center justify-center"
           style=""
         >
-          <img
-            :src="require('@/assets/images/SAM_short_logo.png')"
-            width="300px"
-          />
+          <img :src="shortLogo" width="300px" />
           <div class="white--text title mt-8 text-center" style="width: 250px">
             Entrando na palestra
             <v-progress-linear indeterminate color="white" />
@@ -63,7 +60,7 @@
                   </v-btn>
                 </div>
                 <div
-                  v-if="!playing && !buffering && !landing"
+                  v-if="!ended && !playing && !buffering && !landing"
                   class="text-center"
                 >
                   <v-btn
@@ -85,9 +82,15 @@
                 <div v-if="buffering">
                   <v-progress-circular indeterminate />
                 </div>
+                <div v-if="ended" class="text-center">
+                  <img :src="shortLogo" width="200px" />
+                  <div class="headline mt-8">
+                    Esta transmissão foi encerrada
+                  </div>
+                </div>
               </div>
               <div
-                v-if="!landing"
+                v-if="!landing && !ended"
                 :class="'mx-lg-8 ' + (landscape ? 'mb-4' : '')"
               >
                 <v-divider />
@@ -142,12 +145,15 @@
             :player-vars="{
               autoplay: 0,
               controls: 0,
-              mute: 1
+              mute: 1,
+              rel: 0
             }"
             @playing=";(playing = true), (buffering = false)"
             @buffering=";(landing = false), (buffering = true)"
             @ready="loadPlayer"
             @paused="stop"
+            @error="stop"
+            @ended="end"
           ></youtube>
         </v-card>
       </v-fade-transition>
@@ -159,6 +165,7 @@ export default {
   data() {
     return {
       landing: true,
+      shortLogo: require('@/assets/images/SAM_short_logo.png'),
       videoId: this.$route.params.id,
       loading: true,
       transitionDuration: 1000,
@@ -172,7 +179,8 @@ export default {
       hovers: 0,
       mobileHud: false,
       landscape: false,
-      hudWidth: null
+      hudWidth: null,
+      ended: false
     }
   },
   computed: {
@@ -289,6 +297,10 @@ export default {
       setTimeout(() => {
         this.player.stopVideo()
       }, 250)
+    },
+    end() {
+      this.stop()
+      this.ended = true
     },
     fullscreenToggle() {
       if (this.fullscreen) {

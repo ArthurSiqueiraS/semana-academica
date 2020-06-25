@@ -58,7 +58,7 @@
                           validate-on-blur
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12">
+                      <!-- <v-col cols="12">
                         <v-text-field
                           v-model="user.studentId"
                           v-mask="$validations.masks.studentId"
@@ -72,7 +72,7 @@
                           ]"
                           validate-on-blur
                         ></v-text-field>
-                      </v-col>
+                      </v-col> -->
                       <v-col cols="12">
                         <v-text-field
                           v-model="user.cpf"

@@ -16,14 +16,15 @@
     </div>
     <v-form>
       <div style="width: 300px" @keyup.enter="signIn()">
-        <v-text-field v-model="login" label="E-mail ou matrícula" />
-        <v-text-field
+        <v-text-field v-model="login" label="E-mail" />
+        <v-text-field v-model="password" label="CPF" />
+        <!-- <v-text-field
           v-model="password"
           :type="hidePassword ? 'password' : ''"
           :append-icon="hidePassword ? 'visibility' : 'visibility_off'"
           label="Senha"
           @click:append="hidePassword = !hidePassword"
-        />
+        /> -->
       </div>
       <v-slide-y-transition>
         <div v-if="notFound" class="error--text text-center">

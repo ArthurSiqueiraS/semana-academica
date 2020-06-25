@@ -6,7 +6,7 @@
     <div v-if="$auth.loggedIn">
       <div class="px-8 pt-4">
         <div class="title">{{ $auth.user.name }}</div>
-        <div v-if="!$auth.hasScope()">
+        <!-- <div v-if="!$auth.hasScope()">
           Inscrição:
           <span v-if="$auth.user.approved" class="success--text">Aprovada</span>
           <span v-if="$auth.user.approved == null" class="warning--text"
@@ -15,7 +15,7 @@
           <span v-if="$auth.user.approved == false" class="error--text"
             >Rejeitada</span
           >
-        </div>
+        </div> -->
         <div class="d-flex flex-column align-start pt-2">
           <div v-for="item in userMenu" :key="item.name">
             <v-btn text @click="item.click">

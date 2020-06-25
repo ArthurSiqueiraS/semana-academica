@@ -19,7 +19,7 @@
           <div class="title white--text">Inscrições</div>
         </v-toolbar>
       </template>
-      <template v-slot:item.approved="{ item }">
+      <!-- <template v-slot:item.approved="{ item }">
         <v-radio-group
           v-model="item.approved"
           :disabled="loading"
@@ -56,7 +56,7 @@
             </template>
           </v-radio>
         </v-radio-group>
-      </template>
+      </template> -->
       <template v-slot:footer.page-text="{ pageStart, pageStop, itemsLength }">
         {{ pageStart }} - {{ pageStop }} de {{ itemsLength }}
       </template>
@@ -73,18 +73,20 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'Matrícula', value: 'studentId', align: 'center' },
-        { text: 'Nome', value: 'name' },
-        { text: 'CPF', value: 'cpf' },
+        // { text: 'Matrícula', value: 'studentId', align: 'center' },
+        { text: 'Nome', value: 'name', align: 'center' },
+        { text: 'CPF', value: 'cpf', align: 'center' },
         {
           text: 'E-mail',
-          value: 'email'
-        },
-        {
-          text: 'Status',
-          value: 'approved',
-          sortable: false
+          value: 'email',
+          align: 'center'
         }
+        // {
+        //   text: 'Status',
+        //   value: 'approved',
+        //   sortable: false,
+        //   align: 'center'
+        // }
       ],
       footerProps: {
         itemsPerPageText: 'Itens por página',

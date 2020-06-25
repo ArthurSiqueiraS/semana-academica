@@ -17,7 +17,11 @@
     <v-form>
       <div style="width: 300px" @keyup.enter="signIn()">
         <v-text-field v-model="login" label="E-mail" />
-        <v-text-field v-model="password" label="CPF" />
+        <v-text-field
+          v-model="password"
+          v-mask="$validations.masks.cpf"
+          label="CPF"
+        />
         <!-- <v-text-field
           v-model="password"
           :type="hidePassword ? 'password' : ''"
@@ -57,7 +61,12 @@
   </div>
 </template>
 <script>
+import { mask } from 'vue-the-mask'
+
 export default {
+  directives: {
+    mask
+  },
   auth: 'guest',
   data() {
     return {
@@ -78,7 +87,7 @@ export default {
           data: {
             auth: {
               login: this.login,
-              password: this.password
+              password: this.password.replace(/\D/g, '')
             }
           }
         })

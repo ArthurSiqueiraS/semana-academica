@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex justify-center my-4">
     <v-col cols="12" sm="10" md="8" lg="6" xl="4">
-      <v-row no-gutters justify="end" class="mb-2">
+      <v-row v-if="step < 3" no-gutters justify="end" class="mb-2">
         <v-btn small rounded depressed color="accent" to="/login">
           Já estou inscrito<v-icon small right>login</v-icon>
         </v-btn>
@@ -132,12 +132,12 @@
                         </span>
                         {{ user.email }}
                       </v-row>
-                      <v-row>
+                      <!-- <v-row>
                         <span class="primary--text font-weight-bold mr-2">
                           Matrícula:
                         </span>
                         {{ user.studentId }}
-                      </v-row>
+                      </v-row> -->
                       <v-row>
                         <span class="primary--text font-weight-bold mr-2">
                           CPF:
@@ -145,9 +145,9 @@
                         {{ user.cpf }}
                       </v-row>
                     </v-card>
-                    <div class="accent--text font-weight-bold mt-4">
+                    <!-- <div class="accent--text font-weight-bold mt-4">
                       Sua senha de acesso: {{ password }}
-                    </div>
+                    </div> -->
                   </div>
                   <v-divider class="mt-8 mb-4" />
 
@@ -189,6 +189,22 @@
                     </v-btn>
                   </div>
                 </div>
+                <div v-if="n == 3" class="text-center">
+                  <div
+                    class="headline font-weight-bold primary--text text-uppercase"
+                  >
+                    Obrigado pela inscrição!
+                  </div>
+                  <div class="d-flex justify-center subtitle-1 mt-4">
+                    <v-col cols="12" sm="10">
+                      Inicie uma sessão com seu e-mail e CPF para obter acesso
+                      às publicações e palestras do evento
+                    </v-col>
+                  </div>
+                  <v-btn class="accent mt-4" depressed to="/login"
+                    >Entrar</v-btn
+                  >
+                </div>
               </v-card>
             </v-stepper-content>
           </v-stepper-items>
@@ -208,14 +224,14 @@
         >{{ dup.text }} já cadastrado</v-alert
       >
     </v-col>
-    <v-snackbar
+    <!-- <v-snackbar
       top
       elevation="16"
       :value="userCreated"
       color="success"
       @click="userCreated = false"
       >Usuário criado com sucesso</v-snackbar
-    >
+    > -->
   </div>
 </template>
 <script>
@@ -229,17 +245,17 @@ export default {
     return {
       step: 1,
       steps: 3,
-      stepTitles: ['Cadastro', 'Confirmação', 'Pagamento'],
+      stepTitles: ['Cadastro', 'Confirmação', 'Finalizado'],
       valid: true,
       user: {
         name: '',
         email: '',
-        studentId: '',
+        // studentId: '',
         cpf: ''
       },
       duplicates: {
         email: { text: 'E-mail', value: false },
-        studentId: { text: 'Número de matrícula', value: false },
+        // studentId: { text: 'Número de matrícula', value: false },
         cpf: { text: 'CPF', value: false }
       },
       loading: false,

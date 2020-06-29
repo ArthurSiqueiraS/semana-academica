@@ -85,14 +85,16 @@ export default {
   },
   computed: {
     navigationMenu() {
-      const navigationMenu = [
-        { name: 'Palestras', url: '/', icon: 'person_pin' },
-        {
-          name: 'Mostra Científica',
-          url: '/publications',
-          icon: 'library_books'
-        }
-      ]
+      const navigationMenu = this.$wip
+        ? []
+        : [
+            { name: 'Palestras', url: '/', icon: 'person_pin' },
+            {
+              name: 'Mostra Científica',
+              url: '/publications',
+              icon: 'library_books'
+            }
+          ]
 
       if (this.$auth.hasScope()) {
         navigationMenu.push({

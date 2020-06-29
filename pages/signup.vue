@@ -7,7 +7,7 @@
         </v-btn>
       </v-row>
       <div
-        v-if="maintenance"
+        v-if="$wip"
         class="text-center flex-grow-1 d-flex flex-column justify-end mt-12"
       >
         <div class="title primary--text mt-12">
@@ -272,8 +272,7 @@ export default {
       },
       loading: false,
       alertTransition: 'scale-transition',
-      userCreated: false,
-      maintenance: true
+      userCreated: false
     }
   },
   computed: {

@@ -2,7 +2,7 @@
   <div>
     <v-img max-width="100vw" :src="require('@/assets/images/SAM_capa.jpg')" />
     <LecturesPanel />
-    <FirstAccess :first-access="firstAccess" />
+    <FirstAccess :first-access="false" />
   </div>
 </template>
 

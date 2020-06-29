@@ -6,19 +6,7 @@
           Já estou inscrito<v-icon small right>login</v-icon>
         </v-btn>
       </v-row>
-      <div
-        v-if="$wip"
-        class="text-center flex-grow-1 d-flex flex-column justify-end mt-12"
-      >
-        <div class="title primary--text mt-12">
-          Desculpe, no momento as inscrições estão fechadas devido a uma
-          manutenção em andamento, com previsão de término às 17:00.
-        </div>
-        <div class="mt-4 info--text subtitle-1">
-          Por favor tente novamente mais tarde.
-        </div>
-      </div>
-      <v-stepper v-else v-model="step" class="transparent elevation-0">
+      <v-stepper v-model="step" class="transparent elevation-0">
         <template>
           <v-stepper-header class="elevation-0">
             <template v-for="n in steps">

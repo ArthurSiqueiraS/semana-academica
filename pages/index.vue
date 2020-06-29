@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-img max-width="100vw" :src="require('@/assets/images/SAM_capa.jpg')" />
-    <LecturesPanel v-if="!$wip" />
-    <FirstAccess :first-access="firstAccess && !$wip" />
+    <LecturesPanel />
+    <FirstAccess :first-access="firstAccess" />
   </div>
 </template>
 

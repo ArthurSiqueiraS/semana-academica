@@ -48,9 +48,6 @@
 </template>
 <script>
 export default {
-  middleware({ app, redirect }) {
-    if (app.$wip) redirect('/')
-  },
   auth: false,
   data() {
     return {

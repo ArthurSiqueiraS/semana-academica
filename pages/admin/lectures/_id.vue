@@ -105,7 +105,19 @@
               md="6"
               :class="['pl-md-4 mt-8', hover && 'primary--text'].join(' ')"
             >
-              <div style="transition: .5s">Horário:</div>
+              <div style="transition: .5s" class="d-flex justify-space-between">
+                <div>
+                  Horário:
+                </div>
+                <v-tooltip v-if="lecture.time != ''" top>
+                  <template v-slot:activator="{ on }">
+                    <v-icon v-on="on" @click="lecture.time = ''">
+                      close
+                    </v-icon>
+                  </template>
+                  Limpar
+                </v-tooltip>
+              </div>
               <v-time-picker
                 v-model="lecture.time"
                 full-width
@@ -199,7 +211,7 @@
           <v-btn
             color="primary"
             class="mt-8 px-8"
-            :loading="saving"
+            :loading="false"
             :disabled="deleting"
             @click="validate"
           >
@@ -343,7 +355,7 @@ export default {
     },
     validate() {
       this.datePickerValid = this.lecture.date != null
-      this.timePickerValid = this.lecture.time !== ''
+      // this.timePickerValid = this.lecture.time !== ''
       this.fileValid = this.$refs.fileInput.validate()
       this.valid =
         this.$refs.form.validate() &&

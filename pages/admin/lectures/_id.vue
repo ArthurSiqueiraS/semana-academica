@@ -211,7 +211,7 @@
           <v-btn
             color="primary"
             class="mt-8 px-8"
-            :loading="false"
+            :loading="saving"
             :disabled="deleting"
             @click="validate"
           >
@@ -225,6 +225,9 @@
         </div>
       </v-form>
     </v-col>
+    <v-snackbar :value="error" color="error">
+      Ocorreu um erro ao salvar a palestra (Código {{ error }})
+    </v-snackbar>
   </div>
 </template>
 <script>
@@ -264,7 +267,8 @@ export default {
       fileDimensionsError: false,
       saving: false,
       deleteDialog: false,
-      deleting: false
+      deleting: false,
+      error: null
     }
   },
   computed: {
@@ -376,11 +380,14 @@ export default {
       if (this.thumbnailFile) {
         formData.set('file', this.thumbnailFile)
       }
-
-      if (!this.id) {
-        await this.$axios.post('/lectures', formData)
-      } else {
-        await this.$axios.put(`/lectures/${this.id}`, formData)
+      try {
+        if (!this.id) {
+          await this.$axios.post('/lectures', formData)
+        } else {
+          await this.$axios.put(`/lectures/${this.id}`, formData)
+        }
+      } catch (err) {
+        this.error = err.response.status
       }
 
       this.saving = false

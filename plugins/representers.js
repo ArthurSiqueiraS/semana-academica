@@ -23,7 +23,7 @@ export default function(_, inject) {
       day,
       time: time !== '01:00' ? time : '',
       link: l.link,
-      thumbnail: process.env.baseUrl + l.thumbnail
+      thumbnail: l.thumbnail
     }
   }
 

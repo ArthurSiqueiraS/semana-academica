@@ -135,14 +135,14 @@ export default {
   pwa: {
     manifest: {
       lang: 'pt',
-      name: process.npm_package_title,
+      name: 'Semana Acadêmica de Medicina UFPEL',
       short_name: 'Semana Acadêmica de Medicina',
       description: process.npm_package_description,
       background_color: themes.light.primary
     },
     meta: {
       mobileAppIOS: true,
-      name: process.npm_package_title,
+      name: 'Semana Acadêmica de Medicina UFPEL',
       lang: 'pt',
       ogImage: 'https://sam2020.netlify.app/logo_green.png'
     }

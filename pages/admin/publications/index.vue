@@ -1,9 +1,9 @@
 <template>
-  <div style="height: 100%" class="lectures-table">
+  <div style="height: 100%" class="publications-table">
     <v-data-table
-      v-model="selectedLectures"
+      v-model="selectedPublications"
       :headers="headers"
-      :items="lectures"
+      :items="publications"
       no-data-text="Nenhum dado encontrado."
       :disable-sort="mobile"
       show-select
@@ -11,13 +11,12 @@
       :footer-props="footerProps"
       height="100%"
       style="height: 100%"
-      :mobile-breakpoint="$vuetify.breakpoint.thresholds.sm"
       class="primary--text d-flex flex-column"
-      @click:row="(lecture) => editLecture(lecture)"
+      @click:row="(publication) => editPublication(publication)"
     >
       <template v-slot:top>
         <v-toolbar dense flat class="accent">
-          <div class="title white--text">Palestras</div>
+          <div class="title white--text">Posters</div>
           <v-spacer />
 
           <div v-if="mobile">
@@ -62,29 +61,27 @@
           </div>
         </v-toolbar>
       </template>
-      <template v-slot:item.thumbnail="{ item }">
-        <v-card
-          height="125"
-          width="150"
-          tile
-          flat
-          class="my-3"
-          style="padding: 3px"
-          color="primary"
-        >
-          <v-img :src="item.thumbnail" max-height="100%" max-width="100%" />
-        </v-card>
+      <template v-slot:item.poster="{ item }">
+        <div class="d-flex justify-center">
+          <v-card
+            height="125"
+            width="150"
+            tile
+            flat
+            class="my-3"
+            style="padding: 3px"
+            color="primary"
+          >
+            <v-img :src="item.poster" max-height="100%" max-width="100%" />
+          </v-card>
+        </div>
       </template>
       <template v-slot:item.link="{ item }">
-        <div class="d-flex align-center">
+        <div class="d-flex align-center justify-center">
           <n-link
             :to="item.link"
             class="link py-3 pl-3 pr-2 ml-n3"
-            :style="{
-              width:
-                ($vuetify.breakpoint.xsOnly || $vuetify.breakpoint.mdOnly) &&
-                '250px'
-            }"
+            :style="{ width: $vuetify.breakpoint.xsOnly && '250px' }"
           >
             {{ $SITE_URL + item.link }}
           </n-link>
@@ -114,8 +111,8 @@
       <v-sheet class="pa-4">
         <v-card-title>
           Deseja excluir
-          {{ selectionActive ? selectedLectures.length : 'todas as' }}
-          palestras?
+          {{ selectionActive ? selectedPublications.length : 'todos os' }}
+          posters?
         </v-card-title>
 
         <v-text-field
@@ -143,7 +140,7 @@
               !selectionActive && deleteAllConfirmation != deleteAllPassword
             "
             :loading="deleting"
-            @click="deleteLectures"
+            @click="deletePublications"
             >Confirmar</v-btn
           >
         </v-card-actions>
@@ -167,28 +164,25 @@ export default {
   },
   data() {
     return {
-      selectedLectures: [],
+      selectedPublications: [],
       headers: [
-        { text: 'Data', value: 'day' },
-        { text: 'Horário', value: 'time' },
-        { text: 'Título', value: 'title' },
         {
-          text: 'Palestrante',
-          value: 'speaker'
+          text: 'Poster',
+          value: 'poster',
+          sortable: false,
+          align: 'center'
         },
-        { text: 'Resumo', value: 'description' },
-        { text: 'Capa', value: 'thumbnail', sortable: false },
-        { text: 'Link', value: 'link', sortable: false }
+        { text: 'Link', value: 'link', sortable: false, align: 'center' }
       ],
       footerProps: {
         itemsPerPageText: 'Itens por página',
         itemsPerPageAllText: 'Todos',
         showFirstLastPage: true
       },
-      lectures: [],
+      publications: [],
       deleteDialog: false,
       deleteAllConfirmation: '',
-      deleteAllPassword: 'Palestras',
+      deleteAllPassword: 'Posters',
       deleting: false,
       blockRowClick: false,
       copied: false
@@ -199,27 +193,27 @@ export default {
       return this.$vuetify.breakpoint.smAndDown
     },
     selectionActive() {
-      return this.selectedLectures.length > 0
+      return this.selectedPublications.length > 0
     },
     actions() {
       return [
         {
-          name: 'Adicionar palestra',
+          name: 'Adicionar poster',
           icon: 'add',
           color: 'primary--text',
-          click: () => this.$router.push('/admin/lectures/new'),
+          click: () => this.$router.push('/admin/publications/new'),
           if: true
         },
         {
           name: `Excluir ${
             this.selectionActive
-              ? 'selecionadas (' + this.selectedLectures.length + ')'
-              : 'todas'
+              ? 'selecionadas (' + this.selectedPublications.length + ')'
+              : 'todos'
           }`,
           icon: 'delete',
           color: 'error--text',
           click: () => (this.deleteDialog = true),
-          if: this.lectures.length > 0
+          if: this.publications.length > 0
         }
       ]
     }
@@ -232,13 +226,13 @@ export default {
     }
   },
   created() {
-    this.fetchLectures()
+    this.fetchPublications()
   },
   methods: {
-    async fetchLectures() {
-      const response = await this.$axios.get('/lectures')
+    async fetchPublications() {
+      const response = await this.$axios.get('/publications')
 
-      this.lectures = response.data.data.map(this.$representers.lecture)
+      this.publications = response.data.data.map(this.$representers.publication)
     },
     async copyToClipboard(content) {
       this.blockRowClick = true
@@ -246,32 +240,32 @@ export default {
       await navigator.clipboard.writeText(content)
       this.copied = true
     },
-    editLecture(lecture) {
+    editPublication(publication) {
       if (!this.blockRowClick)
-        this.$router.push(`/admin/lectures/${lecture.id}`)
+        this.$router.push(`/admin/publications/${publication.id}`)
       else this.blockRowClick = false
     },
-    async deleteLectures() {
+    async deletePublications() {
       this.deleting = true
 
-      const ids = this.selectedLectures.map((l) => l.id)
-      await this.$axios.delete('/lectures', {
+      const ids = this.selectedPublications.map((l) => l.id)
+      await this.$axios.delete('/publications', {
         params: { ids }
       })
       if (this.selectionActive) {
-        this.lectures = this.lectures.filter((l) => !ids.includes(l.id))
+        this.publications = this.publications.filter((l) => !ids.includes(l.id))
       } else {
-        this.lectures = []
+        this.publications = []
       }
       this.deleting = false
       this.deleteDialog = false
-      this.selectedLectures = []
+      this.selectedPublications = []
     }
   }
 }
 </script>
 <style lang="scss">
-.lectures-table {
+.publications-table {
   td {
     cursor: pointer !important;
   }

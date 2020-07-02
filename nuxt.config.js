@@ -4,7 +4,7 @@ const dev = process.env.NODE_ENV === 'development'
 const test = process.env.NODE_ENV === 'test'
 
 let baseUrl = ''
-if (dev) baseUrl = 'http://192.168.0.13:8000'
+if (dev) baseUrl = 'http://192.168.0.8:8000'
 else if (test) baseUrl = 'https://semana-academica-medicina-dev.herokuapp.com'
 else baseUrl = 'https://semana-academica-medicina.herokuapp.com'
 
@@ -64,7 +64,7 @@ export default {
       {
         hid: 'og:image',
         name: 'og:image',
-        content: 'https://sam2020.netlify.app/logo_green.png'
+        content: 'https://sam2020.netlify.app/sam_og.png'
       },
       {
         hid: 'og:title',
@@ -106,6 +106,7 @@ export default {
   plugins: [
     '@/plugins/axios',
     '@/plugins/representers',
+    '@/plugins/constants',
     '@/plugins/actioncable-vue',
     '@/plugins/youtube',
     '@/plugins/validations',
@@ -117,8 +118,12 @@ export default {
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    '@nuxtjs/google-analytics'
   ],
+  googleAnalytics: {
+    id: 'UA-163245148-2'
+  },
   /*
    ** Nuxt.js modules
    */
@@ -131,14 +136,14 @@ export default {
   pwa: {
     manifest: {
       lang: 'pt',
-      name: process.npm_package_title,
+      name: 'Semana Acadêmica de Medicina UFPEL',
       short_name: 'Semana Acadêmica de Medicina',
       description: process.npm_package_description,
       background_color: themes.light.primary
     },
     meta: {
       mobileAppIOS: true,
-      name: process.npm_package_title,
+      name: 'Semana Acadêmica de Medicina UFPEL',
       lang: 'pt',
       ogImage: 'https://sam2020.netlify.app/logo_green.png'
     }

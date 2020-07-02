@@ -11,6 +11,7 @@
       :footer-props="footerProps"
       height="100%"
       style="height: 100%"
+      :mobile-breakpoint="$vuetify.breakpoint.thresholds.sm"
       class="primary--text d-flex flex-column"
       @click:row="(lecture) => editLecture(lecture)"
     >
@@ -76,7 +77,15 @@
       </template>
       <template v-slot:item.link="{ item }">
         <div class="d-flex align-center">
-          <n-link :to="item.link" class="link py-3 pl-3 pr-2 ml-n3">
+          <n-link
+            :to="item.link"
+            class="link py-3 pl-3 pr-2 ml-n3"
+            :style="{
+              width:
+                ($vuetify.breakpoint.xsOnly || $vuetify.breakpoint.mdOnly) &&
+                '250px'
+            }"
+          >
             {{ $SITE_URL + item.link }}
           </n-link>
           <v-tooltip top>
@@ -140,6 +149,13 @@
         </v-card-actions>
       </v-sheet>
     </v-dialog>
+    <v-snackbar
+      v-model="copied"
+      max-width="20"
+      style="cursor: pointer;"
+      @click="copied = false"
+      >Link copiado para a área de transferência</v-snackbar
+    >
   </div>
 </template>
 <script>
@@ -174,7 +190,8 @@ export default {
       deleteAllConfirmation: '',
       deleteAllPassword: 'Palestras',
       deleting: false,
-      blockRowClick: false
+      blockRowClick: false,
+      copied: false
     }
   },
   computed: {
@@ -226,6 +243,7 @@ export default {
     async copyToClipboard(content) {
       this.blockRowClick = true
       await navigator.clipboard.writeText(content)
+      this.copied = true
     },
     editLecture(lecture) {
       if (!this.blockRowClick)
@@ -259,6 +277,9 @@ export default {
   .link {
     z-index: 1000;
     text-decoration: underline;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     &:hover {
       opacity: 0.8;

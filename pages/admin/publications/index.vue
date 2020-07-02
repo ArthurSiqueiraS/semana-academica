@@ -78,7 +78,11 @@
       </template>
       <template v-slot:item.link="{ item }">
         <div class="d-flex align-center justify-center">
-          <n-link :to="item.link" class="link py-3 pl-3 pr-2">
+          <n-link
+            :to="item.link"
+            class="link py-3 pl-3 pr-2 ml-n3"
+            :style="{ width: $vuetify.breakpoint.xsOnly && '250px' }"
+          >
             {{ $SITE_URL + item.link }}
           </n-link>
           <v-tooltip top>
@@ -142,6 +146,13 @@
         </v-card-actions>
       </v-sheet>
     </v-dialog>
+    <v-snackbar
+      v-model="copied"
+      max-width="20"
+      style="cursor: pointer;"
+      @click="copied = false"
+      >Link copiado para a área de transferência</v-snackbar
+    >
   </div>
 </template>
 <script>
@@ -173,7 +184,8 @@ export default {
       deleteAllConfirmation: '',
       deleteAllPassword: 'Posters',
       deleting: false,
-      blockRowClick: false
+      blockRowClick: false,
+      copied: false
     }
   },
   computed: {
@@ -225,6 +237,7 @@ export default {
     async copyToClipboard(content) {
       this.blockRowClick = true
       await navigator.clipboard.writeText(content)
+      this.copied = true
     },
     editPublication(publication) {
       if (!this.blockRowClick)
@@ -258,6 +271,9 @@ export default {
   .link {
     z-index: 1000;
     text-decoration: underline;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     &:hover {
       opacity: 0.8;

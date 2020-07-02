@@ -227,7 +227,7 @@
         </div>
       </v-form>
     </v-col>
-    <v-snackbar :value="error" color="error">
+    <v-snackbar v-model="error" color="error">
       Ocorreu um erro ao salvar a palestra (Código {{ error }})
     </v-snackbar>
   </div>

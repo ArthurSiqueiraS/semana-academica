@@ -64,7 +64,7 @@ export default {
       {
         hid: 'og:image',
         name: 'og:image',
-        content: 'https://sam2020.netlify.app/logo_green.png'
+        content: 'https://sam2020.netlify.app/sam_og.png'
       },
       {
         hid: 'og:title',

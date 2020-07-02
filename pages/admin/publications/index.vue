@@ -236,6 +236,7 @@ export default {
     },
     async copyToClipboard(content) {
       this.blockRowClick = true
+      this.copied = false
       await navigator.clipboard.writeText(content)
       this.copied = true
     },

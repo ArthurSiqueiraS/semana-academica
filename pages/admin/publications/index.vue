@@ -79,7 +79,7 @@
       <template v-slot:item.link="{ item }">
         <div class="d-flex align-center justify-center">
           <n-link :to="item.link" class="link py-3 pl-3 pr-2">
-            https://sam2020.netlify.app{{ item.link }}
+            {{ $SITE_URL + item.link }}
           </n-link>
           <v-tooltip top>
             <template v-slot:activator="{ on }">
@@ -88,7 +88,7 @@
                 large
                 color="accent"
                 v-on="on"
-                @click="copyToClipboard(item.link)"
+                @click="copyToClipboard($SITE_URL + item.link)"
               >
                 <v-icon size="20">
                   content_copy
@@ -172,7 +172,8 @@ export default {
       deleteDialog: false,
       deleteAllConfirmation: '',
       deleteAllPassword: 'Posters',
-      deleting: false
+      deleting: false,
+      blockRowClick: false
     }
   },
   computed: {
@@ -222,10 +223,13 @@ export default {
       this.publications = response.data.data.map(this.$representers.publication)
     },
     async copyToClipboard(content) {
+      this.blockRowClick = true
       await navigator.clipboard.writeText(content)
     },
     editPublication(publication) {
-      this.$router.push(`/admin/publications/${publication.id}`)
+      if (!this.blockRowClick)
+        this.$router.push(`/admin/publications/${publication.id}`)
+      else this.blockRowClick = false
     },
     async deletePublications() {
       this.deleting = true

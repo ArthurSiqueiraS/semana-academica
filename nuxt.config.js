@@ -106,6 +106,7 @@ export default {
   plugins: [
     '@/plugins/axios',
     '@/plugins/representers',
+    '@/plugins/constants',
     '@/plugins/actioncable-vue',
     '@/plugins/youtube',
     '@/plugins/validations',

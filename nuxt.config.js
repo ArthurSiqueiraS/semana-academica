@@ -75,6 +75,11 @@ export default {
         hid: 'og:description',
         name: 'og:description',
         content: process.env.npm_package_description
+      },
+      {
+        hid: 'og:url',
+        name: 'og:url',
+        content: 'https://sam2020.netlify.app'
       }
     ],
     link: [

@@ -1,9 +1,12 @@
 <template>
-  <div class="d-flex justify-center py-8" style="width: 100%">
+  <div
+    class="d-flex justify-center align-center py-8"
+    style="width: 100%; height: 100%"
+  >
     <v-col cols="10" md="8" lg="6" xl="5">
       <v-form ref="form" :value="valid" lazy-validation>
         <h2 class="text-uppercase primary--text mb-8 text-center">
-          {{ id ? 'Editar' : 'Adicionar' }} Palestra
+          {{ id ? 'Editar' : 'Adicionar' }} Poster
         </h2>
         <v-row v-if="id" no-gutters class="mb-2">
           <v-spacer />
@@ -21,7 +24,7 @@
         <v-dialog v-model="deleteDialog" width="400" :persistent="deleting">
           <v-sheet class="pa-4">
             <v-card-title>
-              Deseja excluir a palestra?
+              Deseja excluir a poster?
             </v-card-title>
 
             <v-card-actions>
@@ -38,97 +41,13 @@
                 depressed
                 color="error"
                 :loading="deleting"
-                @click="deleteLecture"
+                @click="deletePublication"
               >
                 Confirmar
               </v-btn>
             </v-card-actions>
           </v-sheet>
         </v-dialog>
-        <v-card class="px-6 pb-6 pt-4">
-          <v-row no-gutters>
-            <v-col cols="12" md="6" class="pr-md-4 mt-0">
-              <v-text-field
-                v-model="lecture.title"
-                hide-details
-                clearable
-                :rules="[(v) => !!v]"
-                label="Título da palestra"
-              />
-            </v-col>
-            <v-col cols="12" md="6" class="pl-md-4 mt-8 mt-md-0">
-              <v-text-field
-                v-model="lecture.speaker"
-                hide-details
-                clearable
-                :rules="[(v) => !!v]"
-                label="Palestrante"
-              />
-            </v-col>
-          </v-row>
-        </v-card>
-        <v-card class="mt-8 pa-6">
-          <v-row no-gutters>
-            <v-textarea
-              v-model="lecture.description"
-              auto-grow
-              clearable
-              :rows="3"
-              dense
-              hide-details
-              :rules="[(v) => !!v]"
-              label="Resumo do palestrante"
-            />
-          </v-row>
-        </v-card>
-        <v-row no-gutters class="font-weight-light">
-          <v-hover v-slot:default="{ hover }">
-            <v-col
-              cols="12"
-              md="6"
-              :class="['pr-md-4 mt-8', hover && 'primary--text'].join(' ')"
-            >
-              <div style="transition: .5s">Data:</div>
-              <v-date-picker
-                v-model="lecture.date"
-                full-width
-                scrollable
-                locale="pt-br"
-                :style="{ ...invalidStyle(datePickerValid), height: '400px' }"
-                @input="datePickerValid = true"
-              />
-            </v-col>
-          </v-hover>
-          <v-hover v-slot:default="{ hover }">
-            <v-col
-              cols="12"
-              md="6"
-              :class="['pl-md-4 mt-8', hover && 'primary--text'].join(' ')"
-            >
-              <div style="transition: .5s" class="d-flex justify-space-between">
-                <div>
-                  Horário:
-                </div>
-                <v-tooltip v-if="lecture.time != ''" top>
-                  <template v-slot:activator="{ on }">
-                    <v-icon v-on="on" @click="lecture.time = ''">
-                      close
-                    </v-icon>
-                  </template>
-                  Limpar
-                </v-tooltip>
-              </div>
-              <v-time-picker
-                v-model="lecture.time"
-                full-width
-                format="24hr"
-                scrollable
-                :style="{ ...invalidStyle(timePickerValid), height: '400px' }"
-                @input="timePickerValid = true"
-              />
-            </v-col>
-          </v-hover>
-        </v-row>
         <v-card
           class="mt-8 pa-6"
           @dragenter="dropzoneEnter"
@@ -148,14 +67,11 @@
             >
               Formato de arquivo inválido
             </v-snackbar>
-            <v-snackbar v-model="fileDimensionsError" color="error">
-              A imagem deve ter pelo menos 300px de largura e 250px de altura
-            </v-snackbar>
             <v-col cols="12" md="8">
               <v-file-input
                 id="file-input"
                 ref="fileInput"
-                v-model="thumbnailFile"
+                v-model="posterFile"
                 :hint="
                   $vuetify.breakpoint.lgAndUp
                     ? 'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
@@ -163,13 +79,13 @@
                 "
                 :hide-details="$vuetify.breakpoint.mdAndDown"
                 persistent-hint
-                label="Capa da palestra"
+                label="Adicionar imagem"
                 accept="image/*"
                 prepend-icon="add_a_photo"
                 :rules="[
                   (v) =>
                     !!v ||
-                    lecture.thumbnail != '' ||
+                    poster != '' ||
                     'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
                 ]"
                 @blur="
@@ -189,22 +105,18 @@
                 outlined
                 width="150"
                 height="125"
-                class="d-flex align-center"
+                class="d-flex align-center justify-center"
                 :style="invalidStyle(fileValid)"
                 @click="openFileInput"
               >
                 <v-img
-                  v-if="thumbnailUrl || lecture.thumbnail"
+                  v-if="posterUrl || poster"
                   max-height="100%"
                   max-width="100%"
-                  :src="thumbnailUrl || lecture.thumbnail"
+                  :src="posterUrl || poster"
                 >
                 </v-img>
-                <div v-else class="text-center">
-                  <div class="subtitle-2 font-weight-light">
-                    Tamanho mínimo: {{ minWidth }}x{{ minHeight }}
-                  </div>
-                </div>
+                <v-icon v-else x-large>photo</v-icon>
               </v-card>
             </v-col>
           </v-row>
@@ -228,45 +140,33 @@
       </v-form>
     </v-col>
     <v-snackbar :value="error" color="error">
-      Ocorreu um erro ao salvar a palestra (Código {{ error }})
+      Ocorreu um erro ao salvar o poster (Código {{ error }})
     </v-snackbar>
   </div>
 </template>
 <script>
 export default {
   async asyncData({ redirect, $axios, route, app }) {
-    let lecture = {
-      title: '',
-      speaker: '',
-      description: '',
-      day: '',
-      time: '',
-      thumbnail: ''
-    }
+    let poster = ''
 
     const id = route.params.id
     if (id !== 'new') {
       try {
-        const response = await $axios.get(`/lectures/${route.params.id}`)
-        lecture = app.$representers.lecture(response.data)
+        const response = await $axios.get(`/publications/${route.params.id}`)
+        poster = app.$representers.publication(response.data).poster
       } catch {
-        redirect('/admin/lectures')
+        redirect('/admin/publications')
       }
     }
-    return { lecture, id: id !== 'new' && id }
+    return { poster, id: id !== 'new' && id }
   },
   data() {
     return {
       valid: true,
-      datePickerValid: true,
-      timePickerValid: true,
       fileValid: true,
-      thumbnailFile: null,
+      posterFile: null,
       draggingOver: 0,
-      minWidth: 300,
-      minHeight: 250,
       fileFormatError: false,
-      fileDimensionsError: false,
       saving: false,
       deleteDialog: false,
       deleting: false,
@@ -274,9 +174,9 @@ export default {
     }
   },
   computed: {
-    thumbnailUrl() {
-      if (this.thumbnailFile) {
-        return URL.createObjectURL(this.thumbnailFile)
+    posterUrl() {
+      if (this.posterFile) {
+        return URL.createObjectURL(this.posterFile)
       }
 
       return ''
@@ -284,9 +184,6 @@ export default {
   },
   watch: {
     fileFormatError(error) {
-      this.invalidateFileInput(error)
-    },
-    fileDimensionsError(error) {
       this.invalidateFileInput(error)
     }
   },
@@ -339,11 +236,7 @@ export default {
           img.src = URL.createObjectURL(file)
           img.onload = function() {
             vm.fileValid = true
-            if (this.width >= vm.minWidth && this.height >= vm.minHeight) {
-              vm.thumbnailFile = file
-            } else {
-              vm.fileDimensionsError = true
-            }
+            vm.posterFile = file
           }
         } else {
           this.fileFormatError = true
@@ -354,42 +247,33 @@ export default {
     },
     resetSnackbar() {
       this.fileFormatError = false
-      this.fileDimensionsError = false
     },
     invalidateFileInput(error) {
       if (error) {
-        this.thumbnailFile = null
+        this.posterFile = null
         this.fileValid = false
       }
     },
     validate() {
-      this.datePickerValid = this.lecture.date != null
-      // this.timePickerValid = this.lecture.time !== ''
       this.fileValid = this.$refs.fileInput.validate()
-      this.valid =
-        this.$refs.form.validate() &&
-        this.datePickerValid &&
-        this.timePickerValid
+      this.valid = this.$refs.form.validate()
 
       if (this.valid) {
-        this.createLecture()
+        this.createPublication()
       }
     },
-    async createLecture() {
+    async createPublication() {
       this.saving = true
       const formData = new FormData()
-      Object.keys(this.lecture).forEach((k) => {
-        formData.set(k, this.lecture[k])
-      })
 
-      if (this.thumbnailFile) {
-        formData.set('file', this.thumbnailFile)
+      if (this.posterFile) {
+        formData.set('file', this.posterFile)
       }
       try {
         if (!this.id) {
-          await this.$axios.post('/lectures', formData)
+          await this.$axios.post('/publications', formData)
         } else {
-          await this.$axios.put(`/lectures/${this.id}`, formData)
+          await this.$axios.put(`/publications/${this.id}`, formData)
         }
       } catch (err) {
         this.error = err.response.status
@@ -398,9 +282,9 @@ export default {
       this.saving = false
       this.$router.go(-1)
     },
-    async deleteLecture() {
+    async deletePublication() {
       this.deleting = true
-      await this.$axios.delete('/lectures', { params: { ids: [this.id] } })
+      await this.$axios.delete('/publications', { params: { ids: [this.id] } })
 
       this.deleting = false
       this.$router.go(-1)

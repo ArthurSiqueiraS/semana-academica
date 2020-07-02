@@ -1,6 +1,6 @@
 <template>
   <div
-    style="height: 100%"
+    style="height: 100%; max-width: 240px"
     :class="$vuetify.theme.dark ? 'accent' : 'secondary'"
   >
     <div v-if="$auth.loggedIn">
@@ -16,7 +16,7 @@
             >Rejeitada</span
           >
         </div> -->
-        <div class="d-flex flex-column align-start pt-2">
+        <div class="d-flex flex-column align-start pt-2 pb-4">
           <div v-for="item in userMenu" :key="item.name">
             <v-btn text @click="item.click">
               {{ item.name }}
@@ -25,7 +25,7 @@
         </div>
       </div>
     </div>
-    <div class="d-flex align-center ml-4">
+    <!-- <div class="d-flex align-center ml-4">
       <v-icon
         class="mr-2"
         :color="$vuetify.theme.dark ? '' : 'info'"
@@ -34,7 +34,7 @@
         {{ $vuetify.theme.dark ? 'wb_sunny' : 'brightness_2' }}
       </v-icon>
       <v-switch v-model="$vuetify.theme.dark" color="primary" class="mr-1" />
-    </div>
+    </div> -->
     <div v-if="$vuetify.breakpoint.mdAndDown">
       <v-divider />
       <v-list tile class="pt-0">

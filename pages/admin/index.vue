@@ -11,14 +11,14 @@
       <v-card
         color="primary"
         class="d-flex flex-column mx-8 my-4"
-        width="160"
-        height="170"
+        width="180"
+        height="190"
         :to="option.link"
       >
         <div class="flex-grow-1 d-flex align-center">
           <v-icon
             color="white"
-            :size="hover ? '80' : '60'"
+            :size="hover ? '90' : '70'"
             class="flex-grow-1"
             >{{ option.icon }}</v-icon
           >
@@ -43,7 +43,12 @@ export default {
     return {
       options: [
         { icon: 'person', name: 'Inscrições', link: '/admin/users' },
-        { icon: 'campaign', name: 'Palestras', link: '/admin/lectures' }
+        { icon: 'campaign', name: 'Palestras', link: '/admin/lectures' },
+        {
+          icon: 'library_books',
+          name: 'Mostra Científica',
+          link: '/admin/publications'
+        }
       ]
     }
   }

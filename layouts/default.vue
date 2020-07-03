@@ -1,9 +1,9 @@
 <template>
   <v-app>
     <Toolbar :navigation-menu="navigationMenu" />
-    <v-content class="background">
+    <v-main class="background">
       <nuxt />
-    </v-content>
+    </v-main>
     <v-fab-transition v-if="$vuetify.breakpoint.lgAndUp">
       <v-btn
         v-show="fab"

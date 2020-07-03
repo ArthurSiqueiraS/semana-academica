@@ -87,10 +87,6 @@ export default {
         rel: 'icon',
         type: 'image/x-icon',
         href: '/favicon.ico'
-      },
-      {
-        rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css?family=Material+Icons'
       }
     ]
   },
@@ -197,6 +193,9 @@ export default {
     theme: {
       dark: false,
       themes
+    },
+    defaultAssets: {
+      icons: 'md'
     }
   },
   /*

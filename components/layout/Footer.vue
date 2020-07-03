@@ -25,7 +25,8 @@
         href="https://github.com/ArthurSiqueiraS"
         target="blank"
       >
-        <v-icon size="20" color="secondary" class="mx-1">mdi-github</v-icon
+        <v-icon size="20" color="secondary" class="mx-1">
+          {{ mdiGithub }} </v-icon
         >ArthurSiqueiraS
       </a>
 
@@ -41,3 +42,12 @@
     </div>
   </v-footer>
 </template>
+<script>
+import { mdiGithub } from '@mdi/js'
+
+export default {
+  data: () => ({
+    mdiGithub
+  })
+}
+</script>

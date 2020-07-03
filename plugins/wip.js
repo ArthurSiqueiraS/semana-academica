@@ -1,3 +1,3 @@
 export default function(_, inject) {
-  inject('wip', true)
+  inject('wip', false)
 }

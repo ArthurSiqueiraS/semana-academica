@@ -97,6 +97,16 @@ export default {
         lectures.map(this.$representers.lecture),
         (l) => l.day
       )
+
+      const date = new Date()
+      const day = `${('0' + date.getDate()).slice(-2)}/${(
+        '0' +
+        (date.getMonth() + 1)
+      ).slice(-2)}`
+
+      Object.keys(this.lectures).forEach((lectureDay, index) => {
+        if (day === lectureDay) this.tab = index
+      })
     }
   }
 }

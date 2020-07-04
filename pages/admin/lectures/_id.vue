@@ -93,6 +93,7 @@
                 v-model="lecture.date"
                 full-width
                 scrollable
+                elevation="2"
                 locale="pt-br"
                 :style="{ ...invalidStyle(datePickerValid), height: '400px' }"
                 @input="datePickerValid = true"
@@ -122,6 +123,7 @@
                 v-model="lecture.time"
                 full-width
                 format="24hr"
+                elevation="2"
                 scrollable
                 :style="{ ...invalidStyle(timePickerValid), height: '400px' }"
                 @input="timePickerValid = true"
@@ -161,7 +163,7 @@
                     ? 'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
                     : ''
                 "
-                :hide-details="$vuetify.breakpoint.mdAndDown"
+                :hide-details="this.$vuetify.breakpoint.mdAndDown"
                 persistent-hint
                 label="Capa da palestra"
                 accept="image/*"
@@ -209,6 +211,46 @@
             </v-col>
           </v-row>
         </v-card>
+        <div v-if="id" class="d-flex justify-center align-center mt-8">
+          <v-card class="pb-4 px-4 d-flex">
+            <v-row no-gutters>
+              <v-text-field
+                v-model="lecture.live"
+                style="max-width: 215px"
+                color="error"
+                label="ID da transmissão"
+                clearable
+                :prepend-icon="mdiYoutube"
+                hide-details
+              />
+              <v-tooltip
+                :top="mobile"
+                :right="!mobile"
+                max-width="300px"
+                color="info"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-icon small class="ml-2" v-on="on">info</v-icon>
+                </template>
+                <div class="my-2">
+                  Ao atribuir um ID de transmissão a palestra apresentará um
+                  aviso de que está
+                  <v-badge color="accent" inline content="Ao vivo" />
+                  e a página da palestra ficará disponível para os
+                  participantes, até que este ID seja apagado.
+                  <br />
+                  <br />
+                  O ID pode ser encontrado na URL original da transmissão no
+                  Youtube, como mostra o exemplo:
+                  <v-img
+                    class="rounded"
+                    :src="require('@/assets/images/yt_id_example.jpg')"
+                  />
+                </div>
+              </v-tooltip>
+            </v-row>
+          </v-card>
+        </div>
         <div class="text-center">
           <v-btn
             color="primary"
@@ -233,6 +275,8 @@
   </div>
 </template>
 <script>
+import { mdiYoutube } from '@mdi/js'
+
 export default {
   async asyncData({ redirect, $axios, route, app }) {
     let lecture = {
@@ -241,7 +285,8 @@ export default {
       description: '',
       day: '',
       time: '',
-      thumbnail: ''
+      thumbnail: '',
+      live: ''
     }
 
     const id = route.params.id
@@ -270,10 +315,14 @@ export default {
       saving: false,
       deleteDialog: false,
       deleting: false,
-      error: null
+      error: null,
+      mdiYoutube
     }
   },
   computed: {
+    mobile() {
+      return this.$vuetify.breakpoint.smAndDown
+    },
     thumbnailUrl() {
       if (this.thumbnailFile) {
         return URL.createObjectURL(this.thumbnailFile)
@@ -379,7 +428,7 @@ export default {
       this.saving = true
       const formData = new FormData()
       Object.keys(this.lecture).forEach((k) => {
-        formData.set(k, this.lecture[k])
+        if (this.lecture[k]) formData.set(k, this.lecture[k])
       })
 
       if (this.thumbnailFile) {

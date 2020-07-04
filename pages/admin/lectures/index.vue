@@ -62,8 +62,44 @@
           </div>
         </v-toolbar>
       </template>
+      <template v-slot:header.data-table-select="{ props, on }">
+        <div class="d-flex justify-center">
+          <v-simple-checkbox
+            color="primary"
+            :value="props.value"
+            @input="on.input"
+            v-on="on"
+          />
+        </div>
+      </template>
+      <template v-slot:item.data-table-select="{ item, isSelected, select }">
+        <div
+          class="d-flex align-center flex-md-column-reverse mt-0 flex-grow-1"
+        >
+          <v-badge
+            v-if="item.live"
+            color="accent"
+            content="Ao vivo"
+            inline
+            class="mt-md-2"
+          />
+          <v-spacer />
+          <v-simple-checkbox
+            color="primary"
+            :value="isSelected"
+            @input="select"
+          />
+        </div>
+      </template>
       <template v-slot:item.thumbnail="{ item }">
+        <v-dialog v-if="mobile" left width="300">
+          <template v-slot:activator="{ on }">
+            <v-icon class="pa-2 mr-n2 mt-2" v-on="on">photo</v-icon>
+          </template>
+          <v-img :src="item.thumbnail" max-height="100%" max-width="100%" />
+        </v-dialog>
         <v-card
+          v-else
           height="125"
           width="150"
           tile
@@ -76,7 +112,10 @@
         </v-card>
       </template>
       <template v-slot:item.link="{ item }">
-        <div class="d-flex align-center">
+        <div
+          class="d-flex justify-end justify-md-start align-center mr-n2"
+          @click="blockRowClick = true"
+        >
           <n-link
             :to="item.link"
             class="link py-3 pl-3 pr-2 ml-n3"
@@ -274,9 +313,12 @@ export default {
 .lectures-table {
   td {
     cursor: pointer !important;
+
+    .v-data-table__mobile-row__cell {
+      width: 100%;
+    }
   }
   .link {
-    z-index: 1000;
     text-decoration: underline;
     white-space: nowrap;
     overflow: hidden;

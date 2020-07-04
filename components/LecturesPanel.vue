@@ -51,7 +51,7 @@
                       Ir para a transmissão
                     </v-btn>
                     <v-btn v-else depressed rounded color="primary" to="/login"
-                      >Inscreva-se para assistir</v-btn
+                      >Inicie sessão para acessar</v-btn
                     >
                   </div>
                 </div>

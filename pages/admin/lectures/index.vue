@@ -92,24 +92,33 @@
         </div>
       </template>
       <template v-slot:item.thumbnail="{ item }">
-        <v-dialog v-if="mobile" left width="300">
+        <v-dialog max-width="min-content">
           <template v-slot:activator="{ on }">
-            <v-icon class="pa-2 mr-n2 mt-2" v-on="on">photo</v-icon>
+            <v-icon v-if="mobile" class="pa-2 mr-n2 mt-2" v-on="on"
+              >photo</v-icon
+            >
+            <v-card
+              v-else
+              height="125"
+              width="150"
+              tile
+              flat
+              class="my-3"
+              style="padding: 3px"
+              color="primary"
+              v-on="on"
+            >
+              <v-img :src="item.thumbnail" max-height="100%" max-width="100%" />
+            </v-card>
           </template>
-          <v-img :src="item.thumbnail" max-height="100%" max-width="100%" />
+          <v-img
+            :src="item.thumbnail"
+            max-width="100%"
+            max-height="80vh"
+            class="elevation-4 rounded"
+            contain
+          />
         </v-dialog>
-        <v-card
-          v-else
-          height="125"
-          width="150"
-          tile
-          flat
-          class="my-3"
-          style="padding: 3px"
-          color="primary"
-        >
-          <v-img :src="item.thumbnail" max-height="100%" max-width="100%" />
-        </v-card>
       </template>
       <template v-slot:item.link="{ item }">
         <div

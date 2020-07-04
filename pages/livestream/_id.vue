@@ -180,7 +180,7 @@ export default {
     try {
       const response = await $axios.get(`/lectures/${route.params.id}`)
 
-      const lecture = response.data
+      const lecture = app.$representers.lecture(response.data)
 
       if (lecture.live) {
         return { lecture, videoId: response.data.live }

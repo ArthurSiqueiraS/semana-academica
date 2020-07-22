@@ -1,22 +1,28 @@
 <template>
   <v-app>
     <Toolbar :navigation-menu="navigationMenu" />
-    <v-content class="background">
+    <v-main class="background">
       <nuxt />
-    </v-content>
+    </v-main>
     <v-fab-transition v-if="$vuetify.breakpoint.lgAndUp">
-      <v-btn
-        v-show="fab"
-        v-scroll="onScroll"
-        fab
-        fixed
-        bottom
-        right
-        color="accent"
-        @click="toTop"
-      >
-        <v-icon>keyboard_arrow_up</v-icon>
-      </v-btn>
+      <v-tooltip left>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-show="fab"
+            v-scroll="onScroll"
+            fab
+            fixed
+            bottom
+            right
+            color="accent"
+            v-on="on"
+            @click="toTop"
+          >
+            <v-icon>keyboard_arrow_up</v-icon>
+          </v-btn>
+        </template>
+        Voltar ao topo
+      </v-tooltip>
     </v-fab-transition>
     <div v-else>
       <v-btn

@@ -23,7 +23,8 @@ export default function(_, inject) {
       day,
       time: time !== '01:00' ? time : '',
       link: l.link,
-      thumbnail: l.thumbnail
+      thumbnail: l.thumbnail,
+      live: l.live
     }
   }
 

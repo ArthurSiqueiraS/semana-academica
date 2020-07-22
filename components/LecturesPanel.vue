@@ -6,13 +6,23 @@
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="day in days" :key="day" class="primary--text">
         <div class="d-flex justify-center">
-          <v-col cols="12" lg="9">
+          <v-col cols="12" md="11" lg="8" xl="6">
             <div v-for="(lecture, index) in lectures[day]" :key="index">
               <div class="d-flex flex-column flex-md-row align-center ma-2">
-                <h4 class="font-weight-bold">
-                  {{ lecture.time }}
-                </h4>
-                <v-divider vertical class="mx-8 d-none d-md-inline" />
+                <div class="d-flex flex-column align-center">
+                  <div class="font-weight-bold px-6">
+                    <v-badge
+                      color="accent"
+                      :value="lecture.live"
+                      :left="!mobile"
+                      content="Ao vivo"
+                      :bottom="mobile"
+                    >
+                      {{ lecture.time }}
+                    </v-badge>
+                  </div>
+                </div>
+                <v-divider vertical class="mr-8 d-none d-md-inline" />
                 <v-card height="250" width="300" flat class="my-4 mr-md-6">
                   <v-img
                     width="100%"
@@ -30,6 +40,19 @@
                     class="info--text"
                   >
                     {{ line }}<br />
+                  </div>
+                  <div v-if="lecture.live" class="mt-8">
+                    <v-btn
+                      v-if="$auth.loggedIn"
+                      color="accent"
+                      depressed
+                      :to="lecture.link"
+                    >
+                      Ir para a transmissão
+                    </v-btn>
+                    <v-btn v-else depressed rounded color="primary" to="/login"
+                      >Inicie sessão para acessar</v-btn
+                    >
                   </div>
                 </div>
               </div>
@@ -52,6 +75,9 @@ export default {
     }
   },
   computed: {
+    mobile() {
+      return this.$vuetify.breakpoint.smAndDown
+    },
     days() {
       return Object.keys(this.lectures)
     }
@@ -71,6 +97,16 @@ export default {
         lectures.map(this.$representers.lecture),
         (l) => l.day
       )
+
+      const date = new Date()
+      const day = `${('0' + date.getDate()).slice(-2)}/${(
+        '0' +
+        (date.getMonth() + 1)
+      ).slice(-2)}`
+
+      Object.keys(this.lectures).forEach((lectureDay, index) => {
+        if (day === lectureDay) this.tab = index
+      })
     }
   }
 }

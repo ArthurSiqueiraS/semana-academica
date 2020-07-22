@@ -157,16 +157,41 @@
           ></youtube>
         </v-card>
       </v-fade-transition>
+      <div
+        v-if="showPlayer"
+        :style="{ width: hudWidth + 'px' }"
+        class="my-4 mx-2 text-center"
+      >
+        <div class="d-flex flex-column flex-md-row align-center">
+          <v-avatar size="40" class="mb-2 mr-md-2 mb-md-0">
+            <img :src="lecture.thumbnail" />
+          </v-avatar>
+          <div class="title primary--text">
+            {{ lecture.speaker }}: {{ lecture.title }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script>
 export default {
+  async asyncData({ redirect, $axios, route, app }) {
+    try {
+      const response = await $axios.get(`/lectures/${route.params.id}`)
+
+      const lecture = app.$representers.lecture(response.data)
+
+      if (lecture.live) {
+        return { lecture, videoId: response.data.live }
+      }
+    } catch {}
+    redirect('/')
+  },
   data() {
     return {
       landing: true,
       shortLogo: require('@/assets/images/SAM_short_logo.png'),
-      videoId: this.$route.params.id,
       loading: true,
       transitionDuration: 1000,
       showPlayer: false,

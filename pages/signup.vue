@@ -223,6 +223,16 @@
         dismissible
         >{{ dup.text }} já cadastrado</v-alert
       >
+      <v-alert
+        color="primary"
+        outlined
+        dense
+        rounded
+        class="warning--text text-center mt-8 mx-4"
+      >
+        Problemas para cadastrar?<br />Entre em contato pelo Whatsapp (53)
+        98108-7033
+      </v-alert>
     </v-col>
     <!-- <v-snackbar
       top

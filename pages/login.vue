@@ -58,6 +58,19 @@
         </v-btn>
       </div>
     </v-form>
+    <v-slide-y-transition>
+      <v-alert
+        v-if="notFound"
+        color="primary"
+        outlined
+        dense
+        rounded
+        class="warning--text text-center mt-8 mx-4"
+      >
+        Problemas para acessar?<br />Entre em contato pelo Whatsapp (53)
+        98108-7033
+      </v-alert>
+    </v-slide-y-transition>
   </div>
 </template>
 <script>

@@ -1,8 +1,5 @@
 <template>
   <div style="height: 100%">
-    <v-snackbar top color="success" :value="loading == false" :timeout="2000">
-      Status de inscrição atualizado
-    </v-snackbar>
     <v-data-table
       :headers="headers"
       :items="users"
@@ -19,44 +16,11 @@
           <div class="title white--text">Inscrições</div>
         </v-toolbar>
       </template>
-      <!-- <template v-slot:item.approved="{ item }">
-        <v-radio-group
-          v-model="item.approved"
-          :disabled="loading"
-          color="red"
-          hide-details
-          dense
-          class="my-2"
-          @change="(status) => updateUserStatus(item, status)"
-        >
-          <v-radio :value="true" color="success">
-            <template v-slot:label>
-              <div
-                :class="
-                  `${
-                    item.approved ? 'success' : 'primary'
-                  }--text subtitle-2 font-weight-regular`
-                "
-              >
-                Aprovado
-              </div>
-            </template>
-          </v-radio>
-          <v-radio :value="false" color="error">
-            <template v-slot:label>
-              <div
-                :class="
-                  `${
-                    item.approved == false ? 'error' : 'primary'
-                  }--text subtitle-2 font-weight-regular`
-                "
-              >
-                Rejeitado
-              </div>
-            </template>
-          </v-radio>
-        </v-radio-group>
-      </template> -->
+      <template v-slot:item.presence="{ item }">
+        <span :class="(item.presence ? 'success' : 'error') + '--text'">
+          {{ item.presence ? 'Sim' : 'Não' }}
+        </span>
+      </template>
       <template v-slot:footer.page-text="{ pageStart, pageStop, itemsLength }">
         {{ pageStart }} - {{ pageStop }} de {{ itemsLength }}
       </template>
@@ -73,20 +37,18 @@ export default {
   data() {
     return {
       headers: [
-        // { text: 'Matrícula', value: 'studentId', align: 'center' },
         { text: 'Nome', value: 'name', align: 'center' },
         { text: 'CPF', value: 'cpf', align: 'center' },
         {
           text: 'E-mail',
           value: 'email',
           align: 'center'
+        },
+        {
+          text: 'Presença confirmada',
+          value: 'presence',
+          align: 'center'
         }
-        // {
-        //   text: 'Status',
-        //   value: 'approved',
-        //   sortable: false,
-        //   align: 'center'
-        // }
       ],
       footerProps: {
         itemsPerPageText: 'Itens por página',
@@ -113,13 +75,6 @@ export default {
       })
 
       this.users = response.data.data
-    },
-    async updateUserStatus(user, status) {
-      this.loading = true
-
-      await this.$axios.put(`/users/${user.id}`, { approved: status })
-
-      this.loading = false
     }
   }
 }

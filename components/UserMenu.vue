@@ -1,6 +1,6 @@
 <template>
   <div
-    style="height: 100%; max-width: 240px"
+    style="height: 100%; max-width: 300px"
     :class="$vuetify.theme.dark ? 'accent' : 'secondary'"
   >
     <div v-if="$auth.loggedIn">
@@ -17,10 +17,34 @@
           >
         </div> -->
         <div class="d-flex flex-column align-start pt-2 pb-4">
+          <v-btn
+            v-if="$auth.user.presence"
+            color="success"
+            style="pointer-events: none"
+            text
+            >Presença confirmada</v-btn
+          >
+          <v-btn
+            v-else
+            :disabled="!eventOnline"
+            :loading="loading"
+            text
+            @click="checkPresence"
+            >Marcar presença</v-btn
+          >
           <div v-for="item in userMenu" :key="item.name">
             <v-btn text @click="item.click">
               {{ item.name }}
             </v-btn>
+          </div>
+          <div class="subtitle-2 mt-2">
+            Status do evento:
+            <v-icon
+              style="margin-bottom: 2px; margin-right: 2px"
+              small
+              :color="eventOnline ? 'success' : 'error'"
+              >stop_circle</v-icon
+            >{{ eventOnline ? 'Online' : 'Offline' }}
           </div>
         </div>
       </div>
@@ -66,17 +90,35 @@ export default {
       default: () => []
     }
   },
+  data() {
+    return {
+      loading: false
+    }
+  },
   computed: {
     userMenu() {
       const userMenu = [{ name: 'Sair', click: this.logout }]
 
       return userMenu
+    },
+    eventOnline() {
+      return this.$event.online()
     }
   },
   methods: {
     logout() {
       this.$auth.$storage.setUniversal('_token.local', null)
       location.href = '/login'
+    },
+    async checkPresence() {
+      this.loading = true
+
+      const user = this.$auth.user
+
+      await this.$axios.put(`/users/${user.id}/check_presence`)
+      this.$auth.setUser({ ...user, presence: true })
+
+      this.loading = false
     }
   }
 }

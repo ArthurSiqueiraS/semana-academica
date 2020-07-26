@@ -68,6 +68,23 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar
+      v-show="pushNotification.text"
+      multi-line
+      top
+      shaped
+      :value="pushNotification.text"
+      :color="pushNotification.type || 'accent'"
+    >
+      <span class="font-weight-bold subtitle-1 white--text">{{
+        pushNotification.text
+      }}</span>
+      <template v-slot:action="{ attrs }">
+        <v-btn text v-bind="attrs" @click="$notifications.reset()">
+          Fechar
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -90,6 +107,12 @@ export default {
     }
   },
   computed: {
+    eventOnline() {
+      return this.$event.online()
+    },
+    pushNotification() {
+      return this.$notifications.notification()
+    },
     navigationMenu() {
       const navigationMenu = this.$wip
         ? []
@@ -118,18 +141,29 @@ export default {
       if (!open) {
         location.href = '/login'
       }
+    },
+    eventOnline(online, previous) {
+      if (this.$auth.loggedIn && previous != null) {
+        this.$notifications.push(
+          `O evento está ${online ? 'online' : 'offline'}.`,
+          online ? 'success' : 'error'
+        )
+      }
     }
   },
-  mounted() {
+  created() {
     this.$cable.subscribe({
       channel: 'SessionChannel',
       room: 'public'
     })
+    this.fetchEventStatus()
   },
   channels: {
     SessionChannel: {
       received(data) {
-        if (this.$auth.user && this.$auth.user.id === data.user.id) {
+        if (data === 'update_event') {
+          this.fetchEventStatus()
+        } else if (this.$auth.user && this.$auth.user.id === data.user.id) {
           this.$router.push('/')
           this.remoteConnection = true
         }
@@ -137,6 +171,10 @@ export default {
     }
   },
   methods: {
+    async fetchEventStatus() {
+      const event = await this.$axios.get('/event')
+      this.$event.set(event.data.online)
+    },
     onScroll(e) {
       if (typeof window === 'undefined') return
       const top = window.pageYOffset || e.target.scrollTop || 0

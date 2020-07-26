@@ -59,14 +59,6 @@
             Solte para adicionar o arquivo
           </v-overlay>
           <v-row v-cloak no-gutters align="center">
-            <v-snackbar
-              v-model="fileFormatError"
-              color="error"
-              style="cursor: pointer"
-              @click="fileFormatError = false"
-            >
-              Formato de arquivo inválido
-            </v-snackbar>
             <v-col cols="12" md="8">
               <v-file-input
                 id="file-input"
@@ -116,7 +108,9 @@
                   :src="posterUrl || poster"
                 >
                 </v-img>
-                <v-icon v-else x-large>photo</v-icon>
+                <v-icon v-else :color="fileValid ? '' : 'error'" x-large
+                  >photo</v-icon
+                >
               </v-card>
             </v-col>
           </v-row>
@@ -139,9 +133,6 @@
         </div>
       </v-form>
     </v-col>
-    <v-snackbar v-model="error" color="error">
-      Ocorreu um erro ao salvar o poster (Código {{ error }})
-    </v-snackbar>
   </div>
 </template>
 <script>
@@ -166,11 +157,9 @@ export default {
       fileValid: true,
       posterFile: null,
       draggingOver: 0,
-      fileFormatError: false,
       saving: false,
       deleteDialog: false,
-      deleting: false,
-      error: null
+      deleting: false
     }
   },
   computed: {
@@ -180,11 +169,6 @@ export default {
       }
 
       return ''
-    }
-  },
-  watch: {
-    fileFormatError(error) {
-      this.invalidateFileInput(error)
     }
   },
   methods: {
@@ -214,7 +198,6 @@ export default {
     addDropFile(e) {
       this.$refs.fileInput.focus()
       this.$refs.fileInput.blur()
-      this.resetSnackbar()
 
       const files = Object.values(e.dataTransfer.files).filter((file) =>
         file.type.split('/').includes('image')
@@ -222,13 +205,15 @@ export default {
       if (files[0]) {
         this.validateFile(files[0])
       } else {
-        this.fileFormatError = true
+        this.fileFormatError()
       }
       this.draggingOver = 0
     },
+    fileFormatError() {
+      this.$notifications.push('Formato de arquivo inválido', 'error')
+      this.invalidateFileInput()
+    },
     validateFile(file) {
-      this.resetSnackbar()
-
       if (file) {
         if (file.type.split('/').includes('image')) {
           const vm = this
@@ -239,20 +224,15 @@ export default {
             vm.posterFile = file
           }
         } else {
-          this.fileFormatError = true
+          this.fileFormatError()
         }
       } else {
         this.fileValid = this.$refs.fileInput.validate()
       }
     },
-    resetSnackbar() {
-      this.fileFormatError = false
-    },
-    invalidateFileInput(error) {
-      if (error) {
-        this.posterFile = null
-        this.fileValid = false
-      }
+    invalidateFileInput() {
+      this.posterFile = null
+      this.fileValid = false
     },
     validate() {
       this.fileValid = this.$refs.fileInput.validate()
@@ -276,7 +256,10 @@ export default {
           await this.$axios.put(`/publications/${this.id}`, formData)
         }
       } catch (err) {
-        this.error = err.response.status
+        this.$notifications.push(
+          `Ocorreu um erro ao salvar o poster (Código ${err.response.status})`,
+          'error'
+        )
       }
 
       this.saving = false

@@ -197,13 +197,6 @@
         </v-card-actions>
       </v-sheet>
     </v-dialog>
-    <v-snackbar
-      v-model="copied"
-      max-width="20"
-      style="cursor: pointer;"
-      @click="copied = false"
-      >Link copiado para a área de transferência</v-snackbar
-    >
   </div>
 </template>
 <script>
@@ -238,8 +231,7 @@ export default {
       deleteAllConfirmation: '',
       deleteAllPassword: 'Palestras',
       deleting: false,
-      blockRowClick: false,
-      copied: false
+      blockRowClick: false
     }
   },
   computed: {
@@ -290,9 +282,11 @@ export default {
     },
     async copyToClipboard(content) {
       this.blockRowClick = true
-      this.copied = false
       await navigator.clipboard.writeText(content)
-      this.copied = true
+      this.$notifications.push(
+        'Link copiado para a área de transferência',
+        'info'
+      )
     },
     editLecture(lecture) {
       if (!this.blockRowClick)

@@ -142,17 +142,6 @@
             Solte para adicionar o arquivo
           </v-overlay>
           <v-row v-cloak no-gutters align="center">
-            <v-snackbar
-              v-model="fileFormatError"
-              color="error"
-              style="cursor: pointer"
-              @click="fileFormatError = false"
-            >
-              Formato de arquivo inválido
-            </v-snackbar>
-            <v-snackbar v-model="fileDimensionsError" color="error">
-              A imagem deve ter pelo menos 300px de largura e 250px de altura
-            </v-snackbar>
             <v-col cols="12" md="8">
               <v-file-input
                 id="file-input"
@@ -269,9 +258,6 @@
         </div>
       </v-form>
     </v-col>
-    <v-snackbar v-model="error" color="error">
-      Ocorreu um erro ao salvar a palestra (Código {{ error }})
-    </v-snackbar>
   </div>
 </template>
 <script>
@@ -310,12 +296,9 @@ export default {
       draggingOver: 0,
       minWidth: 300,
       minHeight: 250,
-      fileFormatError: false,
-      fileDimensionsError: false,
       saving: false,
       deleteDialog: false,
       deleting: false,
-      error: null,
       mdiYoutube
     }
   },
@@ -329,14 +312,6 @@ export default {
       }
 
       return ''
-    }
-  },
-  watch: {
-    fileFormatError(error) {
-      this.invalidateFileInput(error)
-    },
-    fileDimensionsError(error) {
-      this.invalidateFileInput(error)
     }
   },
   methods: {
@@ -366,7 +341,6 @@ export default {
     addDropFile(e) {
       this.$refs.fileInput.focus()
       this.$refs.fileInput.blur()
-      this.resetSnackbar()
 
       const files = Object.values(e.dataTransfer.files).filter((file) =>
         file.type.split('/').includes('image')
@@ -374,13 +348,22 @@ export default {
       if (files[0]) {
         this.validateFile(files[0])
       } else {
-        this.fileFormatError = true
+        this.fileFormatError()
       }
       this.draggingOver = 0
     },
+    fileFormatError() {
+      this.$notifications.push('Formato de arquivo inválido', 'error')
+      this.invalidateFileInput()
+    },
+    fileDimensionsError() {
+      this.$notifications.push(
+        'A imagem deve ter pelo menos 300px de largura e 250px de altura',
+        'error'
+      )
+      this.invalidateFileInput()
+    },
     validateFile(file) {
-      this.resetSnackbar()
-
       if (file) {
         if (file.type.split('/').includes('image')) {
           const vm = this
@@ -391,25 +374,19 @@ export default {
             if (this.width >= vm.minWidth && this.height >= vm.minHeight) {
               vm.thumbnailFile = file
             } else {
-              vm.fileDimensionsError = true
+              vm.fileDimensionsError()
             }
           }
         } else {
-          this.fileFormatError = true
+          this.fileFormatError()
         }
       } else {
         this.fileValid = this.$refs.fileInput.validate()
       }
     },
-    resetSnackbar() {
-      this.fileFormatError = false
-      this.fileDimensionsError = false
-    },
-    invalidateFileInput(error) {
-      if (error) {
-        this.thumbnailFile = null
-        this.fileValid = false
-      }
+    invalidateFileInput() {
+      this.thumbnailFile = null
+      this.fileValid = false
     },
     validate() {
       this.datePickerValid = this.lecture.date != null
@@ -441,7 +418,10 @@ export default {
           await this.$axios.put(`/lectures/${this.id}`, formData)
         }
       } catch (err) {
-        this.error = err.response.status
+        this.$notifications.push(
+          `Ocorreu um erro ao salvar a palestra (Código ${err.response.status})`,
+          'error'
+        )
       }
 
       this.saving = false

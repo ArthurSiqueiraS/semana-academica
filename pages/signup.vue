@@ -234,14 +234,6 @@
         98108-7033
       </v-alert>
     </v-col>
-    <!-- <v-snackbar
-      top
-      elevation="16"
-      :value="userCreated"
-      color="success"
-      @click="userCreated = false"
-      >Usuário criado com sucesso</v-snackbar
-    > -->
   </div>
 </template>
 <script>
@@ -260,17 +252,14 @@ export default {
       user: {
         name: '',
         email: '',
-        // studentId: '',
         cpf: ''
       },
       duplicates: {
         email: { text: 'E-mail', value: false },
-        // studentId: { text: 'Número de matrícula', value: false },
         cpf: { text: 'CPF', value: false }
       },
       loading: false,
-      alertTransition: 'scale-transition',
-      userCreated: false
+      alertTransition: 'scale-transition'
     }
   },
   computed: {
@@ -326,7 +315,7 @@ export default {
       })
 
       this.loading = false
-      this.userCreated = true
+      this.$notifications.push('Usuário cadastrado com sucesso.', 'success')
       this.nextStep()
     }
   }

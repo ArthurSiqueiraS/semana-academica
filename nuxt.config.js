@@ -4,7 +4,7 @@ const dev = process.env.NODE_ENV === 'development'
 const test = process.env.NODE_ENV === 'test'
 
 let baseUrl = ''
-if (dev) baseUrl = 'http://192.168.0.8:8000'
+if (dev) baseUrl = 'http://192.168.0.4:8000'
 else if (test) baseUrl = 'https://semana-academica-medicina-dev.herokuapp.com'
 else baseUrl = 'https://semana-academica-medicina.herokuapp.com'
 
@@ -26,7 +26,7 @@ const themes = {
     info: colors.grey.base,
     warning: colors.amber.base,
     error: colors.deepOrange.accent4,
-    success: colors.green.accent3,
+    success: colors.green.accent4,
     background: colors.grey.lighten5
   }
 }
@@ -110,6 +110,8 @@ export default {
     '@/plugins/actioncable-vue',
     '@/plugins/youtube',
     '@/plugins/validations',
+    '@/plugins/notifications',
+    '@/plugins/event',
     '@/plugins/wip'
   ],
   /*

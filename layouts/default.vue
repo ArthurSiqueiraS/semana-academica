@@ -36,7 +36,7 @@
       >
         <v-icon>menu_open</v-icon>
       </v-btn>
-      <v-navigation-drawer v-model="userMenu" right fixed temporary>
+      <v-navigation-drawer v-model="userMenu" right fixed temporary width="300">
         <UserMenu :navigation-menu="navigationMenu" />
       </v-navigation-drawer>
     </div>
@@ -73,6 +73,7 @@
       multi-line
       top
       shaped
+      :timeout="pushNotification.timeout"
       :value="pushNotification.text"
       :color="pushNotification.type || 'accent'"
     >

@@ -30,7 +30,7 @@
             :loading="loading"
             text
             @click="checkPresence"
-            >Marcar presença</v-btn
+            >Marcar presença diária</v-btn
           >
           <div v-for="item in userMenu" :key="item.name">
             <v-btn text @click="item.click">
@@ -117,6 +117,13 @@ export default {
 
       await this.$axios.put(`/users/${user.id}/check_presence`)
       this.$auth.setUser({ ...user, presence: true })
+      let date = new Date().toLocaleDateString()
+      if (date.length === 9) date = '0' + date
+      this.$notifications.push(
+        `Você marcou a presença do dia ${date}. Lembre-se de marcar sua presença em cada dia de evento.`,
+        'success',
+        -1
+      )
 
       this.loading = false
     }

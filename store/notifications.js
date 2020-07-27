@@ -1,7 +1,8 @@
 export const state = () => ({
   notification: {
     text: null,
-    type: null
+    type: null,
+    timeout: 5000
   }
 })
 
@@ -12,7 +13,8 @@ export const mutations = {
   reset(state) {
     state.notification = {
       text: null,
-      type: null
+      type: null,
+      timeout: 5000
     }
   }
 }

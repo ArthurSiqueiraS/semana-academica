@@ -19,16 +19,27 @@
 
     <!-- Legal Footer -->
     <div class="pb-2 secondary--text d-flex">
-      2020 -
-      <a
-        class="d-flex align-center secondary--text"
-        href="https://github.com/ArthurSiqueiraS"
-        target="blank"
+      2020 - Desenvolvido por Arthur Siqueira |
+      <v-tooltip
+        v-for="item in developerLinks"
+        :key="item.name"
+        class="red--text"
+        top
       >
-        <v-icon size="20" color="secondary" class="mx-1">
-          {{ mdiGithub }} </v-icon
-        >ArthurSiqueiraS
-      </a>
+        <template v-slot:activator="{ on }">
+          <a
+            class="d-flex align-center secondary--text ml-1"
+            :href="item.link"
+            target="_blank"
+            v-on="on"
+          >
+            <v-icon size="20" color="secondary">
+              {{ item.icon }}
+            </v-icon>
+          </a>
+        </template>
+        {{ item.name }}
+      </v-tooltip>
 
       <!-- <v-spacer /> -->
       <!-- <div>
@@ -43,11 +54,22 @@
   </v-footer>
 </template>
 <script>
-import { mdiGithub } from '@mdi/js'
+import { mdiGithub, mdiLinkedin } from '@mdi/js'
 
 export default {
   data: () => ({
-    mdiGithub
+    developerLinks: [
+      {
+        name: 'Github',
+        icon: mdiGithub,
+        link: 'https://github.com/ArthurSiqueiraS'
+      },
+      {
+        name: 'Linkedin',
+        icon: mdiLinkedin,
+        link: 'https://www.linkedin.com/in/arthur-siqueira-e-silva-8283bb18a/'
+      }
+    ]
   })
 }
 </script>

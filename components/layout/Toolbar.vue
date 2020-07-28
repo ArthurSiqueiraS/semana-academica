@@ -40,9 +40,16 @@
         Participar<v-icon size="20" right>login</v-icon>
       </v-btn>
       <v-btn v-show="$auth.loggedIn && desktop" id="user-menu" text>
-        <v-icon :color="$vuetify.theme.dark ? '' : 'secondary'">
-          account_circle
-        </v-icon>
+        <v-badge
+          :value="$event.online() && !$auth.user.presence"
+          dot
+          left
+          color="warning"
+        >
+          <v-icon :color="$vuetify.theme.dark ? '' : 'secondary'">
+            account_circle
+          </v-icon>
+        </v-badge>
       </v-btn>
     </v-toolbar>
     <v-menu

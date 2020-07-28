@@ -18,28 +18,35 @@
     </v-row>
 
     <!-- Legal Footer -->
-    <div class="pb-2 secondary--text d-flex">
-      2020 - Desenvolvido por Arthur Siqueira |
-      <v-tooltip
-        v-for="item in developerLinks"
-        :key="item.name"
-        class="red--text"
-        top
+    <div
+      class="pb-2 secondary--text text-center d-flex flex-column flex-sm-row mx-4"
+    >
+      2020 <br v-if="mobile" /><span v-else class="mx-1"
+        >- Desenvolvido por</span
       >
-        <template v-slot:activator="{ on }">
-          <a
-            class="d-flex align-center secondary--text ml-1"
-            :href="item.link"
-            target="_blank"
-            v-on="on"
-          >
-            <v-icon size="20" color="secondary">
-              {{ item.icon }}
-            </v-icon>
-          </a>
-        </template>
-        {{ item.name }}
-      </v-tooltip>
+      Arthur Siqueira<br v-if="mobile" /><span v-else class="ml-1">|</span>
+      <div class="d-flex justify-center">
+        <v-tooltip
+          v-for="item in developerLinks"
+          :key="item.name"
+          class="red--text"
+          top
+        >
+          <template v-slot:activator="{ on }">
+            <a
+              class="d-flex align-center secondary--text ml-1"
+              :href="item.link"
+              target="_blank"
+              v-on="on"
+            >
+              <v-icon size="20" color="secondary">
+                {{ item.icon }}
+              </v-icon>
+            </a>
+          </template>
+          {{ item.name }}
+        </v-tooltip>
+      </div>
 
       <!-- <v-spacer /> -->
       <!-- <div>
@@ -70,6 +77,11 @@ export default {
         link: 'https://www.linkedin.com/in/arthur-siqueira-e-silva-8283bb18a/'
       }
     ]
-  })
+  }),
+  computed: {
+    mobile() {
+      return this.$vuetify.breakpoint.xsOnly
+    }
+  }
 }
 </script>

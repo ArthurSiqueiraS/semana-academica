@@ -34,7 +34,15 @@
         right
         @click="userMenu = true"
       >
-        <v-icon>menu_open</v-icon>
+        <v-badge
+          :value="eventOnline && !$auth.user.presence"
+          offset-x="0"
+          offset-y="0"
+          left
+          color="warning"
+        >
+          <v-icon>menu_open</v-icon>
+        </v-badge>
       </v-btn>
       <v-navigation-drawer v-model="userMenu" right fixed temporary width="300">
         <UserMenu :navigation-menu="navigationMenu" />

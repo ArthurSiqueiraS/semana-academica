@@ -24,14 +24,24 @@
             text
             >Presença confirmada</v-btn
           >
-          <v-btn
+          <v-badge
             v-else
-            :disabled="!eventOnline"
-            :loading="loading"
-            text
-            @click="checkPresence"
-            >Marcar presença diária</v-btn
+            :value="$event.online()"
+            offset-x="10"
+            offset-y="10"
+            dot
+            color="warning"
+            left
           >
+            <v-btn
+              :disabled="!eventOnline"
+              :loading="loading"
+              text
+              @click="checkPresence"
+            >
+              Marcar presença diária
+            </v-btn>
+          </v-badge>
           <div v-for="item in userMenu" :key="item.name">
             <v-btn text @click="item.click">
               {{ item.name }}

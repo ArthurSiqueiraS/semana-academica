@@ -22,6 +22,19 @@
       </v-expand-transition>
     </div>
     <div class="d-flex flex-column align-center pa-lg-8">
+      <v-slide-y-transition>
+        <div v-if="showPlayer">
+          <v-alert
+            v-if="$event.online() && !$auth.user.presence"
+            :tile="mobile"
+            color="warning"
+            :text="mobile"
+            :outlined="!mobile"
+            class="mb-0 mb-md-4 text-center"
+            >Lembre-se de marcar sua presença através do menu lateral!
+          </v-alert>
+        </div>
+      </v-slide-y-transition>
       <v-fade-transition>
         <v-card
           v-show="showPlayer"

@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex justify-center">
     <v-col cols="12" md="10" lg="8" xl="6">
-      <v-img :src="publication.poster" />
+      <embed :src="publication.pdf" width="100%" height="1080px" />
     </v-col>
   </div>
 </template>

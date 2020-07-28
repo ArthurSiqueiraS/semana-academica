@@ -61,32 +61,49 @@
           </div>
         </v-toolbar>
       </template>
-      <template v-slot:item.poster="{ item }">
-        <v-dialog max-width="min-content">
-          <template v-slot:activator="{ on }">
-            <v-icon v-if="mobile" class="pa-2 mr-n2 mt-2" v-on="on"
-              >photo</v-icon
-            >
-            <v-card
-              v-else
-              height="125"
-              width="150"
-              tile
-              flat
-              class="my-3"
-              style="padding: 3px"
-              color="primary"
-              v-on="on"
-            >
-              <v-img :src="item.poster" max-height="100%" max-width="100%" />
-            </v-card>
-          </template>
-          <img
-            :src="item.poster"
-            style="max-height: 80vh; width: auto; max-width: 80vw"
-            class="elevation-4 rounded"
-          />
-        </v-dialog>
+      <template v-slot:item.cover="{ item }">
+        <div class="d-flex justify-center">
+          <v-dialog max-width="min-content">
+            <template v-slot:activator="{ on }">
+              <v-icon v-if="mobile" class="pa-2 mr-n2 mt-2" v-on="on"
+                >photo</v-icon
+              >
+              <v-card
+                v-else
+                height="125"
+                width="150"
+                tile
+                flat
+                class="my-3"
+                style="padding: 3px"
+                color="primary"
+                v-on="on"
+              >
+                <v-img :src="item.cover" max-height="100%" max-width="100%" />
+              </v-card>
+            </template>
+            <img
+              :src="item.cover"
+              style="max-height: 80vh; width: auto; max-width: 80vw"
+              class="elevation-4 rounded"
+            />
+          </v-dialog>
+        </div>
+      </template>
+      <template v-slot:item.pdf="{ item }">
+        <div
+          class="d-flex align-center justify-center mr-n2"
+          @click="blockRowClick = true"
+        >
+          <a
+            :href="item.pdf"
+            target="_blank"
+            class="link py-3 pl-3 pr-2 ml-n3"
+            :style="{ width: $vuetify.breakpoint.xsOnly && '250px' }"
+          >
+            {{ item.pdf }}
+          </a>
+        </div>
       </template>
       <template v-slot:item.link="{ item }">
         <div
@@ -175,11 +192,12 @@ export default {
       selectedPublications: [],
       headers: [
         {
-          text: 'Poster',
-          value: 'poster',
+          text: 'Capa',
+          value: 'cover',
           sortable: false,
           align: 'center'
         },
+        { text: 'PDF', align: 'center', value: 'pdf', sortable: false },
         { text: 'Link', value: 'link', sortable: false, align: 'center' }
       ],
       footerProps: {

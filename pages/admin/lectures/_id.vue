@@ -131,75 +131,62 @@
             </v-col>
           </v-hover>
         </v-row>
-        <v-card
-          class="mt-8 pa-6"
-          @dragenter="dropzoneEnter"
-          @dragleave="dropzoneLeave"
-          @drop.prevent="addDropFile"
-          @dragover.prevent
-        >
-          <v-overlay color="primary" opacity="1" absolute :value="draggingOver">
-            Solte para adicionar o arquivo
-          </v-overlay>
-          <v-row v-cloak no-gutters align="center">
-            <v-col cols="12" md="8">
-              <v-file-input
-                id="file-input"
-                ref="fileInput"
-                v-model="thumbnailFile"
-                :hint="
-                  $vuetify.breakpoint.lgAndUp
-                    ? 'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
-                    : ''
-                "
-                :hide-details="this.$vuetify.breakpoint.mdAndDown"
-                persistent-hint
-                label="Capa da palestra"
-                accept="image/*"
-                prepend-icon="add_a_photo"
-                :rules="[
-                  (v) =>
-                    !!v ||
-                    lecture.thumbnail != '' ||
-                    'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
-                ]"
-                @blur="
-                  fileValid = $refs.fileInput && $refs.fileInput.validate()
-                "
-                @change="validateFile"
+        <Dropzone :drop-handler="addDropFile">
+          <v-col cols="12" md="8">
+            <v-file-input
+              id="file-input"
+              ref="fileInput"
+              v-model="thumbnailFile"
+              :hint="
+                $vuetify.breakpoint.lgAndUp
+                  ? 'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
+                  : ''
+              "
+              :hide-details="this.$vuetify.breakpoint.mdAndDown"
+              persistent-hint
+              label="Capa da palestra"
+              accept="image/*"
+              prepend-icon="add_a_photo"
+              :rules="[
+                (v) =>
+                  !!v ||
+                  lecture.thumbnail != '' ||
+                  'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
+              ]"
+              @blur="fileValid = $refs.fileInput && $refs.fileInput.validate()"
+              @change="validateFile"
+            >
+              <template v-slot:selection="{ text }">
+                <v-chip small label color="primary">
+                  {{ text }}
+                </v-chip>
+              </template>
+            </v-file-input>
+          </v-col>
+          <v-col cols="12" md="4" class="mt-4 pl-md-4 d-flex justify-center">
+            <v-card
+              outlined
+              width="150"
+              height="125"
+              class="d-flex align-center"
+              :style="invalidStyle(fileValid)"
+              @click="openFileInput"
+            >
+              <v-img
+                v-if="thumbnailUrl || lecture.thumbnail"
+                max-height="100%"
+                max-width="100%"
+                :src="thumbnailUrl || lecture.thumbnail"
               >
-                <template v-slot:selection="{ text }">
-                  <v-chip small label color="primary">
-                    {{ text }}
-                  </v-chip>
-                </template>
-              </v-file-input>
-            </v-col>
-            <v-col cols="12" md="4" class="mt-4 pl-md-4 d-flex justify-center">
-              <v-card
-                outlined
-                width="150"
-                height="125"
-                class="d-flex align-center"
-                :style="invalidStyle(fileValid)"
-                @click="openFileInput"
-              >
-                <v-img
-                  v-if="thumbnailUrl || lecture.thumbnail"
-                  max-height="100%"
-                  max-width="100%"
-                  :src="thumbnailUrl || lecture.thumbnail"
-                >
-                </v-img>
-                <div v-else class="text-center">
-                  <div class="subtitle-2 font-weight-light">
-                    Tamanho mínimo: {{ minWidth }}x{{ minHeight }}
-                  </div>
+              </v-img>
+              <div v-else class="text-center">
+                <div class="subtitle-2 font-weight-light">
+                  Tamanho mínimo: {{ minWidth }}x{{ minHeight }}
                 </div>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-card>
+              </div>
+            </v-card>
+          </v-col>
+        </Dropzone>
         <div v-if="id" class="d-flex justify-center align-center mt-8">
           <v-card class="pb-4 px-4 d-flex">
             <v-row no-gutters>
@@ -262,8 +249,12 @@
 </template>
 <script>
 import { mdiYoutube } from '@mdi/js'
+import Dropzone from '@/components/Dropzone'
 
 export default {
+  components: {
+    Dropzone
+  },
   async asyncData({ redirect, $axios, route, app }) {
     let lecture = {
       title: '',

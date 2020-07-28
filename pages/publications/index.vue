@@ -34,7 +34,8 @@
                 height="250"
               >
                 <img
-                  :src="publication.poster"
+                  :src="publication.cover"
+                  style="min-width: 100%; min-height: 100%; object-fit: cover"
                   class="rounded-br-xl rounded-tl-xl"
                 />
               </v-card>

@@ -24,7 +24,7 @@
         <v-dialog v-model="deleteDialog" width="400" :persistent="deleting">
           <v-sheet class="pa-4">
             <v-card-title>
-              Deseja excluir a poster?
+              Deseja excluir o poster?
             </v-card-title>
 
             <v-card-actions>
@@ -48,73 +48,98 @@
             </v-card-actions>
           </v-sheet>
         </v-dialog>
-        <v-card
-          class="mt-8 pa-6"
-          @dragenter="dropzoneEnter"
-          @dragleave="dropzoneLeave"
-          @drop.prevent="addDropFile"
-          @dragover.prevent
-        >
-          <v-overlay color="primary" opacity="1" absolute :value="draggingOver">
-            Solte para adicionar o arquivo
-          </v-overlay>
-          <v-row v-cloak no-gutters align="center">
-            <v-col cols="12" md="8">
-              <v-file-input
-                id="file-input"
-                ref="fileInput"
-                v-model="posterFile"
-                :hint="
-                  $vuetify.breakpoint.lgAndUp
-                    ? 'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
-                    : ''
-                "
-                :hide-details="$vuetify.breakpoint.mdAndDown"
-                persistent-hint
-                label="Adicionar imagem"
-                accept="image/*"
-                prepend-icon="add_a_photo"
-                :rules="[
-                  (v) =>
-                    !!v ||
-                    poster != '' ||
-                    'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
-                ]"
-                @blur="
-                  fileValid = $refs.fileInput && $refs.fileInput.validate()
-                "
-                @change="validateFile"
+        <Dropzone :drop-handler="addDropPdfFile">
+          <v-col cols="12">
+            <v-file-input
+              ref="pdfFileInput"
+              v-model="pdfFile"
+              :hint="
+                $vuetify.breakpoint.lgAndUp
+                  ? 'Clique para buscar nos seus arquivos ou arraste um PDF até aqui'
+                  : ''
+              "
+              :hide-details="$vuetify.breakpoint.mdAndDown"
+              persistent-hint
+              label="Adicionar arquivo PDF"
+              accept="application/pdf"
+              prepend-icon="note_add"
+              :rules="[
+                (v) =>
+                  !!v ||
+                  pdf != '' ||
+                  'Clique para buscar nos seus arquivos ou arraste um PDF até aqui'
+              ]"
+              @blur="
+                pdfFileValid =
+                  $refs.pdfFileInput && $refs.pdfFileInput.validate()
+              "
+              @change="validatePdfFile"
+            >
+              <template v-slot:selection="{ text }">
+                <v-chip small label color="primary">
+                  {{ text }}
+                </v-chip>
+              </template>
+            </v-file-input>
+          </v-col>
+        </Dropzone>
+        <Dropzone :drop-handler="addDropCoverFile">
+          <v-col cols="12" md="8">
+            <v-file-input
+              id="cover-file-input"
+              ref="coverFileInput"
+              v-model="coverFile"
+              :hint="
+                $vuetify.breakpoint.lgAndUp
+                  ? 'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
+                  : ''
+              "
+              :hide-details="$vuetify.breakpoint.mdAndDown"
+              persistent-hint
+              label="Adicionar imagem de capa"
+              accept="image/*"
+              prepend-icon="add_a_photo"
+              :rules="[
+                (v) =>
+                  !!v ||
+                  cover != '' ||
+                  'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
+              ]"
+              @blur="
+                coverFileValid =
+                  $refs.coverFileInput && $refs.coverFileInput.validate()
+              "
+              @change="validateCoverFile"
+            >
+              <template v-slot:selection="{ text }">
+                <v-chip small label color="primary">
+                  {{ text }}
+                </v-chip>
+              </template>
+            </v-file-input>
+          </v-col>
+          <v-col cols="12" md="4" class="mt-4 pl-md-4 d-flex justify-center">
+            <v-card
+              outlined
+              width="150"
+              height="125"
+              class="d-flex align-center justify-center"
+              :style="invalidStyle(coverFileValid)"
+              @click="openCoverFileInput"
+            >
+              <v-img
+                v-if="posterUrl || cover"
+                max-height="100%"
+                max-width="100%"
+                :src="posterUrl || cover"
               >
-                <template v-slot:selection="{ text }">
-                  <v-chip small label color="primary">
-                    {{ text }}
-                  </v-chip>
-                </template>
-              </v-file-input>
-            </v-col>
-            <v-col cols="12" md="4" class="mt-4 pl-md-4 d-flex justify-center">
-              <v-card
-                outlined
-                width="150"
-                height="125"
-                class="d-flex align-center justify-center"
-                :style="invalidStyle(fileValid)"
-                @click="openFileInput"
+              </v-img>
+              <v-icon v-else :color="coverFileValid ? '' : 'error'" x-large
+                >photo</v-icon
               >
-                <v-img
-                  v-if="posterUrl || poster"
-                  max-height="100%"
-                  max-width="100%"
-                  :src="posterUrl || poster"
-                >
-                </v-img>
-                <v-icon v-else :color="fileValid ? '' : 'error'" x-large
-                  >photo</v-icon
-                >
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-card>
+            </v-card>
+          </v-col>
+        </Dropzone>
         <div class="text-center">
           <v-btn
             color="primary"
@@ -136,27 +161,36 @@
   </div>
 </template>
 <script>
+import Dropzone from '@/components/Dropzone'
+
 export default {
+  components: {
+    Dropzone
+  },
   async asyncData({ redirect, $axios, route, app }) {
-    let poster = ''
+    let pdf = ''
+    let cover = ''
 
     const id = route.params.id
     if (id !== 'new') {
       try {
         const response = await $axios.get(`/publications/${route.params.id}`)
-        poster = app.$representers.publication(response.data).poster
+        const poster = app.$representers.publication(response.data)
+        pdf = poster.pdf
+        cover = poster.cover
       } catch {
         redirect('/admin/publications')
       }
     }
-    return { poster, id: id !== 'new' && id }
+    return { pdf, cover, id: id !== 'new' && id }
   },
   data() {
     return {
       valid: true,
-      fileValid: true,
-      posterFile: null,
-      draggingOver: 0,
+      pdfFileValid: true,
+      coverFileValid: true,
+      pdfFile: null,
+      coverFile: null,
       saving: false,
       deleteDialog: false,
       deleting: false
@@ -164,22 +198,14 @@ export default {
   },
   computed: {
     posterUrl() {
-      if (this.posterFile) {
-        return URL.createObjectURL(this.posterFile)
+      if (this.coverFile) {
+        return URL.createObjectURL(this.coverFile)
       }
 
       return ''
     }
   },
   methods: {
-    dropzoneEnter(e) {
-      e.preventDefault()
-
-      this.draggingOver++
-    },
-    dropzoneLeave() {
-      this.draggingOver--
-    },
     invalidStyle(cond) {
       const errorColor = this.$vuetify.theme.currentTheme.error
 
@@ -192,50 +218,83 @@ export default {
 
       return {}
     },
-    openFileInput() {
-      document.getElementById('file-input').click()
+    openCoverFileInput() {
+      document.getElementById('cover-file-input').click()
     },
-    addDropFile(e) {
-      this.$refs.fileInput.focus()
-      this.$refs.fileInput.blur()
+    addDropPdfFile(e) {
+      this.$refs.pdfFileInput.focus()
+      this.$refs.pdfFileInput.blur()
+
+      const files = Object.values(e.dataTransfer.files).filter(
+        (file) => file.type === 'application/pdf'
+      )
+      if (files[0]) {
+        this.validatePdfFile(files[0])
+      } else {
+        this.pdfFileFormatError()
+      }
+    },
+    addDropCoverFile(e) {
+      this.$refs.coverFileInput.focus()
+      this.$refs.coverFileInput.blur()
 
       const files = Object.values(e.dataTransfer.files).filter((file) =>
         file.type.split('/').includes('image')
       )
       if (files[0]) {
-        this.validateFile(files[0])
+        this.validateCoverFile(files[0])
       } else {
-        this.fileFormatError()
+        this.coverFileFormatError()
       }
-      this.draggingOver = 0
     },
-    fileFormatError() {
+    pdfFileFormatError() {
       this.$notifications.push('Formato de arquivo inválido', 'error')
-      this.invalidateFileInput()
+      this.invalidatePdfFileInput()
     },
-    validateFile(file) {
+    coverFileFormatError() {
+      this.$notifications.push('Formato de arquivo inválido', 'error')
+      this.invalidateCoverFileInput()
+    },
+    validatePdfFile(file) {
+      if (file) {
+        if (file.type === 'application/pdf') {
+          this.pdfFileValid = true
+          this.pdfFile = file
+        } else {
+          this.pdfFileFormatError()
+        }
+      } else {
+        this.pdfFileValid = this.$refs.pdfFileInput.validate()
+      }
+    },
+    validateCoverFile(file) {
       if (file) {
         if (file.type.split('/').includes('image')) {
           const vm = this
           const img = new Image()
           img.src = URL.createObjectURL(file)
           img.onload = function() {
-            vm.fileValid = true
-            vm.posterFile = file
+            vm.coverFileValid = true
+            vm.coverFile = file
           }
         } else {
-          this.fileFormatError()
+          this.coverFileFormatError()
         }
       } else {
-        this.fileValid = this.$refs.fileInput.validate()
+        this.coverFileValid = this.$refs.coverFileInput.validate()
       }
     },
-    invalidateFileInput() {
-      this.posterFile = null
-      this.fileValid = false
+    invalidatePdfFileInput() {
+      this.pdfFile = null
+      this.pdfFileValid = false
+    },
+    invalidateCoverFileInput() {
+      this.coverFile = null
+      this.coverFileValid = false
     },
     validate() {
-      this.fileValid = this.$refs.fileInput.validate()
+      this.pdfFileValid = this.$refs.pdfFileInput.validate()
+      this.coverFileValid = this.$refs.coverFileInput.validate()
       this.valid = this.$refs.form.validate()
 
       if (this.valid) {
@@ -246,8 +305,11 @@ export default {
       this.saving = true
       const formData = new FormData()
 
-      if (this.posterFile) {
-        formData.set('file', this.posterFile)
+      if (this.pdfFile) {
+        formData.set('pdfFile', this.pdfFile)
+      }
+      if (this.coverFile) {
+        formData.set('coverFile', this.coverFile)
       }
       try {
         if (!this.id) {

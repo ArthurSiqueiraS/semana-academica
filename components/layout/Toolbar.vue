@@ -41,7 +41,7 @@
       </v-btn>
       <v-btn v-show="$auth.loggedIn && desktop" id="user-menu" text>
         <v-badge
-          :value="$event.online() && !$auth.user.presence"
+          :value="$auth.loggedIn && $event.online() && !$auth.user.presence"
           dot
           left
           color="warning"

@@ -28,7 +28,7 @@
                 class="primary"
                 flat
                 shaped
-                :elevation="hover ? 8 : 0"
+                :elevation="hover ? 8 : 2"
                 style="transition: .15s"
                 :to="publication.link"
                 height="250"

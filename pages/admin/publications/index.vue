@@ -61,35 +61,6 @@
           </div>
         </v-toolbar>
       </template>
-      <template v-slot:item.cover="{ item }">
-        <div class="d-flex justify-center">
-          <v-dialog max-width="min-content">
-            <template v-slot:activator="{ on }">
-              <v-icon v-if="mobile" class="pa-2 mr-n2 mt-2" v-on="on"
-                >photo</v-icon
-              >
-              <v-card
-                v-else
-                height="125"
-                width="150"
-                tile
-                flat
-                class="my-3"
-                style="padding: 3px"
-                color="primary"
-                v-on="on"
-              >
-                <v-img :src="item.cover" max-height="100%" max-width="100%" />
-              </v-card>
-            </template>
-            <img
-              :src="item.cover"
-              style="max-height: 80vh; width: auto; max-width: 80vw"
-              class="elevation-4 rounded"
-            />
-          </v-dialog>
-        </div>
-      </template>
       <template v-slot:item.pdf="{ item }">
         <div
           class="d-flex align-center justify-center mr-n2"
@@ -192,9 +163,8 @@ export default {
       selectedPublications: [],
       headers: [
         {
-          text: 'Capa',
-          value: 'cover',
-          sortable: false,
+          text: 'Título',
+          value: 'title',
           align: 'center'
         },
         { text: 'PDF', align: 'center', value: 'pdf', sortable: false },

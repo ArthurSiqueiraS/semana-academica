@@ -18,38 +18,30 @@
           </v-col>
         </v-row> -->
         <v-row no-gutters class="pa-4">
-          <v-hover
-            v-for="publication in publications"
-            v-slot:default="{ hover }"
-            :key="publication.id"
-          >
-            <v-col cols="12" sm="6" lg="4" xl="3" class="pa-4 publication">
-              <v-card
-                class="primary"
-                flat
-                shaped
-                :elevation="hover ? 8 : 2"
-                style="transition: .15s"
-                :to="publication.link"
-                height="250"
-              >
-                <img
-                  :src="publication.cover"
-                  style="min-width: 100%; min-height: 100%; object-fit: cover"
-                  class="rounded-br-xl rounded-tl-xl"
-                />
-              </v-card>
-            </v-col>
-          </v-hover>
+          <v-list outlined class="py-0" width="100%">
+            <div
+              v-for="(publication, index) in publications"
+              :key="publication.id"
+            >
+              <v-list-item :to="publication.link">
+                <v-list-item-content>
+                  <v-list-item-title class="primary--text">
+                    {{ publication.title }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider v-if="index < publications.length - 1" />
+            </div>
+          </v-list>
         </v-row>
-        <v-pagination
+        <!-- <v-pagination
           v-model="page"
           :length="totalPages"
           total-visible="7"
           circle
           color="accent"
           class="my-2"
-        ></v-pagination>
+        ></v-pagination> -->
       </v-col>
     </div>
     <div
@@ -82,14 +74,15 @@ export default {
   },
   computed: {
     perPage() {
-      if (this.$vuetify.breakpoint.lg) {
-        return 9
-      }
-      if (this.$vuetify.breakpoint.xl) {
-        return 12
-      }
+      return null
+      //   if (this.$vuetify.breakpoint.lg) {
+      //     return 9
+      //   }
+      //   if (this.$vuetify.breakpoint.xl) {
+      //     return 12
+      //   }
 
-      return 6
+      //   return 6
     }
   },
   watch: {

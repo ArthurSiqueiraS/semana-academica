@@ -48,6 +48,20 @@
             </v-card-actions>
           </v-sheet>
         </v-dialog>
+        <v-card class="px-6 pb-6 pt-4">
+          <v-row no-gutters>
+            <v-col cols="12">
+              <v-text-field
+                v-model="poster.title"
+                prepend-icon="edit"
+                hide-details
+                clearable
+                :rules="[(v) => !!v]"
+                label="Título da palestra"
+              />
+            </v-col>
+          </v-row>
+        </v-card>
         <Dropzone :drop-handler="addDropPdfFile">
           <v-col cols="12">
             <v-file-input
@@ -63,10 +77,11 @@
               label="Adicionar arquivo PDF"
               accept="application/pdf"
               prepend-icon="note_add"
+              :placeholder="poster.pdf"
               :rules="[
                 (v) =>
                   !!v ||
-                  pdf != '' ||
+                  (poster.pdf != '' && poster.pdf != null) ||
                   'Clique para buscar nos seus arquivos ou arraste um PDF até aqui'
               ]"
               @blur="
@@ -81,63 +96,6 @@
                 </v-chip>
               </template>
             </v-file-input>
-          </v-col>
-        </Dropzone>
-        <Dropzone :drop-handler="addDropCoverFile">
-          <v-col cols="12" md="8">
-            <v-file-input
-              id="cover-file-input"
-              ref="coverFileInput"
-              v-model="coverFile"
-              :hint="
-                $vuetify.breakpoint.lgAndUp
-                  ? 'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
-                  : ''
-              "
-              :hide-details="$vuetify.breakpoint.mdAndDown"
-              persistent-hint
-              label="Adicionar imagem de capa"
-              accept="image/*"
-              prepend-icon="add_a_photo"
-              :rules="[
-                (v) =>
-                  !!v ||
-                  cover != '' ||
-                  'Clique para buscar nos seus arquivos ou arraste uma imagem até aqui'
-              ]"
-              @blur="
-                coverFileValid =
-                  $refs.coverFileInput && $refs.coverFileInput.validate()
-              "
-              @change="validateCoverFile"
-            >
-              <template v-slot:selection="{ text }">
-                <v-chip small label color="primary">
-                  {{ text }}
-                </v-chip>
-              </template>
-            </v-file-input>
-          </v-col>
-          <v-col cols="12" md="4" class="mt-4 pl-md-4 d-flex justify-center">
-            <v-card
-              outlined
-              width="150"
-              height="125"
-              class="d-flex align-center justify-center"
-              :style="invalidStyle(coverFileValid)"
-              @click="openCoverFileInput"
-            >
-              <v-img
-                v-if="posterUrl || cover"
-                max-height="100%"
-                max-width="100%"
-                :src="posterUrl || cover"
-              >
-              </v-img>
-              <v-icon v-else :color="coverFileValid ? '' : 'error'" x-large
-                >photo</v-icon
-              >
-            </v-card>
           </v-col>
         </Dropzone>
         <div class="text-center">
@@ -168,41 +126,27 @@ export default {
     Dropzone
   },
   async asyncData({ redirect, $axios, route, app }) {
-    let pdf = ''
-    let cover = ''
-
     const id = route.params.id
+    let poster = {}
+
     if (id !== 'new') {
       try {
         const response = await $axios.get(`/publications/${route.params.id}`)
-        const poster = app.$representers.publication(response.data)
-        pdf = poster.pdf
-        cover = poster.cover
+        poster = app.$representers.publication(response.data)
       } catch {
         redirect('/admin/publications')
       }
     }
-    return { pdf, cover, id: id !== 'new' && id }
+    return { poster, id: id !== 'new' && id }
   },
   data() {
     return {
       valid: true,
       pdfFileValid: true,
-      coverFileValid: true,
       pdfFile: null,
-      coverFile: null,
       saving: false,
       deleteDialog: false,
       deleting: false
-    }
-  },
-  computed: {
-    posterUrl() {
-      if (this.coverFile) {
-        return URL.createObjectURL(this.coverFile)
-      }
-
-      return ''
     }
   },
   methods: {
@@ -218,9 +162,6 @@ export default {
 
       return {}
     },
-    openCoverFileInput() {
-      document.getElementById('cover-file-input').click()
-    },
     addDropPdfFile(e) {
       this.$refs.pdfFileInput.focus()
       this.$refs.pdfFileInput.blur()
@@ -234,26 +175,10 @@ export default {
         this.pdfFileFormatError()
       }
     },
-    addDropCoverFile(e) {
-      this.$refs.coverFileInput.focus()
-      this.$refs.coverFileInput.blur()
 
-      const files = Object.values(e.dataTransfer.files).filter((file) =>
-        file.type.split('/').includes('image')
-      )
-      if (files[0]) {
-        this.validateCoverFile(files[0])
-      } else {
-        this.coverFileFormatError()
-      }
-    },
     pdfFileFormatError() {
       this.$notifications.push('Formato de arquivo inválido', 'error')
       this.invalidatePdfFileInput()
-    },
-    coverFileFormatError() {
-      this.$notifications.push('Formato de arquivo inválido', 'error')
-      this.invalidateCoverFileInput()
     },
     validatePdfFile(file) {
       if (file) {
@@ -267,34 +192,12 @@ export default {
         this.pdfFileValid = this.$refs.pdfFileInput.validate()
       }
     },
-    validateCoverFile(file) {
-      if (file) {
-        if (file.type.split('/').includes('image')) {
-          const vm = this
-          const img = new Image()
-          img.src = URL.createObjectURL(file)
-          img.onload = function() {
-            vm.coverFileValid = true
-            vm.coverFile = file
-          }
-        } else {
-          this.coverFileFormatError()
-        }
-      } else {
-        this.coverFileValid = this.$refs.coverFileInput.validate()
-      }
-    },
     invalidatePdfFileInput() {
       this.pdfFile = null
       this.pdfFileValid = false
     },
-    invalidateCoverFileInput() {
-      this.coverFile = null
-      this.coverFileValid = false
-    },
     validate() {
       this.pdfFileValid = this.$refs.pdfFileInput.validate()
-      this.coverFileValid = this.$refs.coverFileInput.validate()
       this.valid = this.$refs.form.validate()
 
       if (this.valid) {
@@ -308,9 +211,8 @@ export default {
       if (this.pdfFile) {
         formData.set('pdfFile', this.pdfFile)
       }
-      if (this.coverFile) {
-        formData.set('coverFile', this.coverFile)
-      }
+      formData.set('title', this.poster.title)
+
       try {
         if (!this.id) {
           await this.$axios.post('/publications', formData)

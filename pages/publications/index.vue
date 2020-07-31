@@ -17,7 +17,20 @@
             />
           </v-col>
         </v-row> -->
-        <v-row no-gutters class="pa-4">
+        <v-row no-gutters justify="center">
+          <v-btn
+            href="https://bbbadm-balancer.ufpel.edu.br/playback/presentation/2.0/playback.html?meetingId=756f146f8a2ae999c55f678ab6b306d945759731-1596130127546"
+            target="_blank"
+            color="accent"
+            outlined
+            text
+            class="mb-4"
+          >
+            Link para apresentações orais
+          </v-btn>
+        </v-row>
+        <v-row no-gutters>
+          <div class="title primary--text mb-4">PÔSTERES</div>
           <v-list outlined class="py-0" width="100%">
             <div
               v-for="(publication, index) in publications"
